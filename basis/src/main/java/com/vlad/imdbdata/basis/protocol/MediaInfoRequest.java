@@ -1,4 +1,4 @@
-package com.vlad.imdbdata.protocol;
+package com.vlad.imdbdata.basis.protocol;
 
 public class MediaInfoRequest {
 
