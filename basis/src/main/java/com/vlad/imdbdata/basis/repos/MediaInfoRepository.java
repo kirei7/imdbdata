@@ -1,10 +1,10 @@
 package com.vlad.imdbdata.basis.repos;
 
 import com.vlad.imdbdata.basis.entity.MediaInfoEntity;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface MediaInfoRepository extends CrudRepository<MediaInfoEntity, String> {
+public interface MediaInfoRepository extends JpaRepository<MediaInfoEntity, String> {
     List<MediaInfoEntity> findByImdbId(String imdbId);
 }

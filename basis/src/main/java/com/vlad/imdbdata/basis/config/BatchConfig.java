@@ -15,42 +15,46 @@ import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.data.RepositoryItemWriter;
-import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
-import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.web.client.RestTemplate;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-
+@Configuration
 @EnableBatchProcessing
+@PropertySource("classpath:batch.properties")
 public class BatchConfig {
     private static final Logger LOGGER = LoggerFactory.getLogger(BatchConfig.class);
 
+    @Autowired
     private JobBuilderFactory jobBuilderFactory;
+    @Autowired
     private StepBuilderFactory stepBuilderFactory;
-    private DataSource dataSource;
+    @Autowired
     private Environment env;
+    @Autowired
     private MediaInfoRepository mediaInfoRepository;
 
-    @Autowired
-    public BatchConfig(
-            JobBuilderFactory jobBuilderFactory,
-            StepBuilderFactory stepBuilderFactory,
-            DataSource dataSource,
-            Environment env,
-            MediaInfoRepository mediaInfoRepository) {
-        this.jobBuilderFactory = jobBuilderFactory;
-        this.stepBuilderFactory = stepBuilderFactory;
-        this.dataSource = dataSource;
-        this.env = env;
-        this.mediaInfoRepository = mediaInfoRepository;
+ /*   @Bean
+    public PlatformTransactionManager transactionManager() {
+        return new DataSourceTransactionManager(batchDataSource());
     }
+    @Bean
+    public DataSource batchDataSource() {
+        SimpleDriverDataSource ds = new SimpleDriverDataSource();
+        ds.setUsername("sa");
+        ds.setPassword("");
+        ds.setDriverClass(JDBCDriver.class);
+        ds.setUrl("jdbc:hsqldb:mem:.");
+    }*/
 
     @Bean
     public Map<MediaType, Job> jobs() {
@@ -62,7 +66,7 @@ public class BatchConfig {
 
     @Bean
     public Job movieJob() {
-        return jobBuilderFactory.get("importUserJob")
+        return jobBuilderFactory.get("movieJob")
                 .incrementer(new RunIdIncrementer())
                 .flow(movieStep1())
                 .end()
@@ -72,7 +76,7 @@ public class BatchConfig {
     @Bean
     public Step movieStep1() {
         return stepBuilderFactory.get("movieStep1")
-                .<MediaInfoEntity, MediaInfoEntity> chunk(10)
+                .<MediaInfoEntity, MediaInfoEntity> chunk(1)
                 .reader(movieReader(env))
                 .processor(processor())
                 .writer(writer())
@@ -94,14 +98,23 @@ public class BatchConfig {
         return new StringItemProcessor();
     }
     static class StringItemProcessor implements ItemProcessor<MediaInfoEntity, MediaInfoEntity> {
+        private int index = 0;
         @Override
         public MediaInfoEntity process(MediaInfoEntity s) throws Exception {
+            if (index != 0) return null;
+            index++;
             return s;
         }
     }
     @Bean
     public RepositoryItemWriter<MediaInfoEntity> writer() {
-        RepositoryItemWriter writer = new RepositoryItemWriter();
+        RepositoryItemWriter writer = new RepositoryItemWriter() {
+            @Override
+            public void write(List items) throws Exception{
+                    LOGGER.debug("WRITE!");
+                    super.write(items);
+            }
+        };
         writer.setRepository(mediaInfoRepository);
         writer.setMethodName("save");
         return writer;
@@ -112,6 +125,12 @@ public class BatchConfig {
     public RestTemplate restTemplate() {
         return new RestTemplate();
     }
+
+    //the following two beans is used to avoid persisting batch metadata in a database
+    /*@Bean
+    public ResourcelessTransactionManager transactionManager() {
+        return new ResourcelessTransactionManager();
+    }*/
 
 /*    @Bean
     public ItemReader<MediaInfoEntity> reader(Environment env) {

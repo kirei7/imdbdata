@@ -26,9 +26,9 @@ public class RemoteMovieItemReader implements ItemReader<MediaInfoEntity> {
     private final String apiUrl;
     private final RestTemplate restTemplate;
     private MediaInfoEntity data;
+    private int index = 0;
 
     public RemoteMovieItemReader(String apiUrl, RestTemplate restTemplate) {
-        LOGGER.debug("constr");
         this.apiUrl = apiUrl;
         this.restTemplate = restTemplate;
     }
@@ -54,6 +54,8 @@ public class RemoteMovieItemReader implements ItemReader<MediaInfoEntity> {
     @Override
     public MediaInfoEntity read()
             throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
+        if (index != 0) return null;
+        index++;
         return data;
     }
 
@@ -80,6 +82,7 @@ public class RemoteMovieItemReader implements ItemReader<MediaInfoEntity> {
             try {
                 HashMap<String,String> map
                         = new ObjectMapper().readValue(source, HashMap.class);
+                LOGGER.debug(map.toString());
                 result = new MediaInfoEntity()
                         .withImdbId(map.get("imdbID"))
                         .withMediaInfo(map);

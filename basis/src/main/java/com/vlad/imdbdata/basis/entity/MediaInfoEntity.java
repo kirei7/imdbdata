@@ -1,14 +1,18 @@
 package com.vlad.imdbdata.basis.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Map;
 
-@Entity
+@Entity(name = "MEDIA_INFO_ENTITY")
 public class MediaInfoEntity {
-
+    public MediaInfoEntity() {}
     @Id
+    @Column(name = "ID")
     private String imdbId;
+
+    //TODO: THIS SHET NOT WORKING!
+    //MAP COULD NOT GET PERSISTED
+    @ElementCollection(fetch = FetchType.EAGER)
     private Map<String, String> mediaInfo;
 
     public String getImdbId() {
@@ -30,8 +34,7 @@ public class MediaInfoEntity {
     @Override
     public String toString() {
         return "[" + this.getClass().getSimpleName() + "{" +
-                "imdbId='" + imdbId + '\'' +
-                "} Title: '" + mediaInfo.get("Title") + "\']";
+                "imdbId='" + imdbId + "\'}";
     }
 
     @Override

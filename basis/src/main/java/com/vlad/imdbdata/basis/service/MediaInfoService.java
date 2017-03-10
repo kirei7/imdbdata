@@ -13,6 +13,7 @@ import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteExcep
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -51,11 +52,12 @@ public class MediaInfoService {
     }
 
     protected Map<String, JobParameter> makeParameters(String title, Integer year) {
-        return new HashMap<String, JobParameter>() {
+        Map<String, JobParameter> map = new HashMap<String, JobParameter>() {
             {
                 put("title", new JobParameter(title));
-                put("year", new JobParameter(new Long(year)));
             }
         };
+        if (year != null) map.put("year", new JobParameter(new Long(year)));
+        return map;
     }
 }
