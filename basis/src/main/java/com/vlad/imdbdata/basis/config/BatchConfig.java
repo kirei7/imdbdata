@@ -1,41 +1,121 @@
 package com.vlad.imdbdata.basis.config;
 
-import com.vlad.imdbdata.basis.batch.RemoteItemReader;
+import com.vlad.imdbdata.basis.batch.RemoteMovieItemReader;
 import com.vlad.imdbdata.basis.entity.MediaInfoEntity;
+import com.vlad.imdbdata.basis.repos.MediaInfoRepository;
+import com.vlad.imdbdata.basis.service.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
+import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
+import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
-import org.springframework.batch.item.file.ResourcesItemReader;
+import org.springframework.batch.item.data.RepositoryItemWriter;
+import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
+import org.springframework.batch.item.database.JdbcBatchItemWriter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.MalformedURLException;
+import javax.sql.DataSource;
+import java.util.HashMap;
+import java.util.Map;
 
-@Configuration
+
 @EnableBatchProcessing
 public class BatchConfig {
     private static final Logger LOGGER = LoggerFactory.getLogger(BatchConfig.class);
 
-/*    @Autowired
-    public JobBuilderFactory jobBuilderFactory;
-    @Autowired
-    public StepBuilderFactory stepBuilderFactory;
-    @Autowired
-    public DataSource dataSource;*/
+    private JobBuilderFactory jobBuilderFactory;
+    private StepBuilderFactory stepBuilderFactory;
+    private DataSource dataSource;
+    private Environment env;
+    private MediaInfoRepository mediaInfoRepository;
 
+    @Autowired
+    public BatchConfig(
+            JobBuilderFactory jobBuilderFactory,
+            StepBuilderFactory stepBuilderFactory,
+            DataSource dataSource,
+            Environment env,
+            MediaInfoRepository mediaInfoRepository) {
+        this.jobBuilderFactory = jobBuilderFactory;
+        this.stepBuilderFactory = stepBuilderFactory;
+        this.dataSource = dataSource;
+        this.env = env;
+        this.mediaInfoRepository = mediaInfoRepository;
+    }
+
+    @Bean
+    public Map<MediaType, Job> jobs() {
+        Map<MediaType, Job> jobs = new HashMap<>();
+        jobs.put(MediaType.MOVIE, movieJob());
+        //TODO add seriesJob
+        return jobs;
+    }
+
+    @Bean
+    public Job movieJob() {
+        return jobBuilderFactory.get("importUserJob")
+                .incrementer(new RunIdIncrementer())
+                .flow(movieStep1())
+                .end()
+                .build();
+    }
+
+    @Bean
+    public Step movieStep1() {
+        return stepBuilderFactory.get("movieStep1")
+                .<MediaInfoEntity, MediaInfoEntity> chunk(10)
+                .reader(movieReader(env))
+                .processor(processor())
+                .writer(writer())
+                .build();
+    }
+
+    @Bean
+    public ItemReader<MediaInfoEntity> movieReader(Environment env) {
+        RemoteMovieItemReader reader = new RemoteMovieItemReader(
+                env.getProperty("remote.api.url"),
+                restTemplate()
+        );
+        return reader;
+    }
+
+    //TODO
+    @Bean
+    public StringItemProcessor processor() {
+        return new StringItemProcessor();
+    }
+    static class StringItemProcessor implements ItemProcessor<MediaInfoEntity, MediaInfoEntity> {
+        @Override
+        public MediaInfoEntity process(MediaInfoEntity s) throws Exception {
+            return s;
+        }
+    }
+    @Bean
+    public RepositoryItemWriter<MediaInfoEntity> writer() {
+        RepositoryItemWriter writer = new RepositoryItemWriter();
+        writer.setRepository(mediaInfoRepository);
+        writer.setMethodName("save");
+        return writer;
+    }
+
+    //TODO end
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();
     }
 
-    @Bean
+/*    @Bean
     public ItemReader<MediaInfoEntity> reader(Environment env) {
-        RemoteItemReader reader = new RemoteItemReader(
+        RemoteMovieItemReader reader = new RemoteMovieItemReader(
             env.getProperty("remote.api.url"),
             restTemplate()
         );
@@ -46,11 +126,11 @@ public class BatchConfig {
             LOGGER.error(ex.getMessage());
         }
         return reader;
-    }
+    }*/
 
     /*@Bean
     public ItemReader itemReader(Environment env, RestTemplate restTemplate) {
-        RemoteItemReader reader = new RemoteItemReader(
+        RemoteMovieItemReader reader = new RemoteMovieItemReader(
                 env.getProperty("remote.api.url"),
                 restTemplate
         );
@@ -64,14 +144,7 @@ public class BatchConfig {
         return null;
     }*/
 
-    /*@Autowired
-    public JobBuilderFactory jobBuilderFactory;
-
-    @Autowired
-    public StepBuilderFactory stepBuilderFactory;
-
-    @Autowired
-    public DataSource dataSource;
+    /*
 
     // tag::readerwriterprocessor[]
     @Bean

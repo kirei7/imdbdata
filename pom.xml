@@ -44,6 +44,16 @@
         <version>${spring.starter.version}</version>
       </dependency>
       <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
+        <version>2.8.7</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-data-jpa</artifactId>
+        <version>${spring.starter.version}</version>
+      </dependency>
+      <dependency>
         <groupId>com.vlad</groupId>
         <artifactId>basis</artifactId>
         <version>1.0-SNAPSHOT</version>
@@ -86,6 +96,7 @@
           <target>1.8</target>
         </configuration>
       </plugin>
+
     </plugins>
   </build>
 

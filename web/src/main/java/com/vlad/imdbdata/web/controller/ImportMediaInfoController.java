@@ -3,7 +3,6 @@ package com.vlad.imdbdata.web.controller;
 import com.vlad.imdbdata.basis.service.MediaInfoService;
 import com.vlad.imdbdata.basis.service.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,8 +15,7 @@ import java.util.Map;
 public class ImportMediaInfoController {
 
     @Autowired
-    @Qualifier(value = "MediaInfoServices")
-    private Map<MediaType, MediaInfoService> services;
+    private MediaInfoService service;
 
     @RequestMapping(method = RequestMethod.GET)
     public void importData(
@@ -25,7 +23,7 @@ public class ImportMediaInfoController {
             @RequestParam(name = "mediaType") MediaType mediaType,
             @RequestParam(name = "year", required = false) Integer year
     ) {
-        services.get(mediaType).importMedia(title, year);
+        //service.importMedia(title, year, mediaType);
     }
 
 }
