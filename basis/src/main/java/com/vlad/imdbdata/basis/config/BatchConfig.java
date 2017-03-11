@@ -1,5 +1,6 @@
 package com.vlad.imdbdata.basis.config;
 
+import com.vlad.imdbdata.basis.batch.MovieItemProcessor;
 import com.vlad.imdbdata.basis.batch.RemoteMovieItemReader;
 import com.vlad.imdbdata.basis.entity.MediaInfoEntity;
 import com.vlad.imdbdata.basis.repos.MediaInfoRepository;
@@ -22,11 +23,9 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.web.client.RestTemplate;
 
-import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 @Configuration
 @EnableBatchProcessing
@@ -42,19 +41,6 @@ public class BatchConfig {
     private Environment env;
     @Autowired
     private MediaInfoRepository mediaInfoRepository;
-
- /*   @Bean
-    public PlatformTransactionManager transactionManager() {
-        return new DataSourceTransactionManager(batchDataSource());
-    }
-    @Bean
-    public DataSource batchDataSource() {
-        SimpleDriverDataSource ds = new SimpleDriverDataSource();
-        ds.setUsername("sa");
-        ds.setPassword("");
-        ds.setDriverClass(JDBCDriver.class);
-        ds.setUrl("jdbc:hsqldb:mem:.");
-    }*/
 
     @Bean
     public Map<MediaType, Job> jobs() {
@@ -76,7 +62,7 @@ public class BatchConfig {
     @Bean
     public Step movieStep1() {
         return stepBuilderFactory.get("movieStep1")
-                .<MediaInfoEntity, MediaInfoEntity> chunk(1)
+                .<Map<String, String>, MediaInfoEntity> chunk(1)
                 .reader(movieReader(env))
                 .processor(processor())
                 .writer(writer())
@@ -84,7 +70,7 @@ public class BatchConfig {
     }
 
     @Bean
-    public ItemReader<MediaInfoEntity> movieReader(Environment env) {
+    public ItemReader<Map<String, String>> movieReader(Environment env) {
         RemoteMovieItemReader reader = new RemoteMovieItemReader(
                 env.getProperty("remote.api.url"),
                 restTemplate()
@@ -94,17 +80,8 @@ public class BatchConfig {
 
     //TODO
     @Bean
-    public StringItemProcessor processor() {
-        return new StringItemProcessor();
-    }
-    static class StringItemProcessor implements ItemProcessor<MediaInfoEntity, MediaInfoEntity> {
-        private int index = 0;
-        @Override
-        public MediaInfoEntity process(MediaInfoEntity s) throws Exception {
-            if (index != 0) return null;
-            index++;
-            return s;
-        }
+    public MovieItemProcessor processor() {
+        return new MovieItemProcessor();
     }
     @Bean
     public RepositoryItemWriter<MediaInfoEntity> writer() {

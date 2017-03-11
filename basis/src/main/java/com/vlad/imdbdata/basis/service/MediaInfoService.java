@@ -47,6 +47,7 @@ public class MediaInfoService {
                 | JobParametersInvalidException
                 | JobRestartException ex) {
             LOGGER.error(ex.getMessage());
+            ex.printStackTrace();
         }
 
     }

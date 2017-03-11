@@ -1,7 +1,6 @@
 package com.vlad.imdbdata.basis.batch;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vlad.imdbdata.basis.entity.MediaInfoEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.JobParameter;
@@ -19,13 +18,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 //@Scope("step")
-public class RemoteMovieItemReader implements ItemReader<MediaInfoEntity> {
+public class RemoteMovieItemReader implements ItemReader<Map<String, String>> {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(RemoteMovieItemReader.class);
 
     private final String apiUrl;
     private final RestTemplate restTemplate;
-    private MediaInfoEntity data;
+    private Map<String, String> data;
     private int index = 0;
 
     public RemoteMovieItemReader(String apiUrl, RestTemplate restTemplate) {
@@ -33,14 +32,7 @@ public class RemoteMovieItemReader implements ItemReader<MediaInfoEntity> {
         this.restTemplate = restTemplate;
     }
 
-    private MediaInfoEntity fetchDataFromRemote(String url) {
-        ResponseEntity<String> response = restTemplate.getForEntity(
-                url,
-                String.class
-        );
-        return EntityMapper.mapFromJson(response.getBody());
-    }
-
+    //here all connections and data fetching occurs
     @BeforeStep
     public void beforeStep(final StepExecution stepExecution) {
         Map<String, JobParameter> parameters = stepExecution
@@ -49,13 +41,23 @@ public class RemoteMovieItemReader implements ItemReader<MediaInfoEntity> {
                 .getParameters();
         String url = makeUrl(apiUrl, parameters);
         data = fetchDataFromRemote(url);
+        /*
+        since we can obtain short plot and full plot only separately
+        we have to execute second query
+        */
+        Map<String, String> additionalData = fetchDataFromRemote(
+                url + "&plot=full&tomatoes=true"
+        );
+        DataMapper.mapAdditionalData(data,additionalData);
+        index = 0;
     }
 
     @Override
-    public MediaInfoEntity read()
+    public Map<String, String> read()
             throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
         if (index != 0) return null;
         index++;
+        LOGGER.info("read() returns: " + data.toString());
         return data;
     }
 
@@ -70,29 +72,40 @@ public class RemoteMovieItemReader implements ItemReader<MediaInfoEntity> {
         if (yp != null) {
             Long year = (Long) yp.getValue();
             sb
-                .append("&")
-                .append("y=")
-                .append(year.toString());
+                    .append("&")
+                    .append("y=")
+                    .append(year.toString());
         }
         return sb.toString();
     }
-    private static class EntityMapper {
-        public static MediaInfoEntity mapFromJson(String source) {
-            MediaInfoEntity result = null;
+    private Map<String, String> fetchDataFromRemote(String url) {
+        ResponseEntity<String> response = restTemplate.getForEntity(
+                url,
+                String.class
+        );
+        return DataMapper.mapFromJson(response.getBody());
+    }
+    private static class DataMapper {
+        static Map<String, String> mapFromJson(String source) {
+            Map<String, String> map = null;
             try {
-                HashMap<String,String> map
-                        = new ObjectMapper().readValue(source, HashMap.class);
-                LOGGER.debug(map.toString());
-                result = new MediaInfoEntity()
-                        .withImdbId(map.get("imdbID"))
-                        .withMediaInfo(map);
-                //do not forget to remove id from the map, since we
-                //already have it in a field
-                map.remove("imdbID");
+                map = new ObjectMapper().readValue(source, HashMap.class);
             } catch (IOException ex) {
                 LOGGER.error(ex.getMessage());
             }
-            return result;
+            return map;
+        }
+        //adds additional data to 'data' map
+        static void mapAdditionalData(
+                Map<String, String> data,
+                Map<String, String> additionalData
+        ) {
+            data.put(
+                    "plotFull",
+                    additionalData.get("Plot")
+            );
+            additionalData.remove("Plot");
+            data.putAll(additionalData);
         }
     }
 }
