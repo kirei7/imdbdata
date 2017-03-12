@@ -1,4 +1,4 @@
-package com.vlad.imdbdata.basis.batch;
+package com.vlad.imdbdata.basis.batch.reader;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
@@ -18,16 +18,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 //@Scope("step")
-public class RemoteMovieItemReader implements ItemReader<Map<String, String>> {
+public class RemoteItemReader implements ItemReader<Map<String, String>> {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(RemoteMovieItemReader.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(RemoteItemReader.class);
 
     private final String apiUrl;
     private final RestTemplate restTemplate;
     private Map<String, String> data;
     private int index = 0;
 
-    public RemoteMovieItemReader(String apiUrl, RestTemplate restTemplate) {
+    public RemoteItemReader(String apiUrl, RestTemplate restTemplate) {
         this.apiUrl = apiUrl;
         this.restTemplate = restTemplate;
     }

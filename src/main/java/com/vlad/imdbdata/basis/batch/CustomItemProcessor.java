@@ -3,6 +3,7 @@ package com.vlad.imdbdata.basis.batch;
 import com.vlad.imdbdata.basis.entity.MediaInfoEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.batch.item.ItemProcessor;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -10,7 +11,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 
-public class ItemProcessor implements org.springframework.batch.item.ItemProcessor {
+public class CustomItemProcessor implements ItemProcessor<Map<String, String>, MediaInfoEntity> {
     private static final Logger LOGGER = LoggerFactory.getLogger(ItemProcessor.class);
 
     @Override
