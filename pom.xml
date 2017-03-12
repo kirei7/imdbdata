@@ -5,13 +5,6 @@
   <groupId>com.vlad</groupId>
   <artifactId>imdb-data</artifactId>
   <version>1.0-SNAPSHOT</version>
-    <modules>
-        <module>web</module>
-        <module>basis</module>
-      <module>basis</module>
-    </modules>
-    <packaging>pom</packaging>
-
   <name>imdb-data</name>
   <url>http://maven.apache.org</url>
 
@@ -19,57 +12,75 @@
     <java.version>1.8</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <imdb.module.version>1.0-SNAPSHOT</imdb.module.version>
-    <spring.starter.version>1.5.2.RELEASE</spring.starter.version>
+    <!--<spring.starter.version>1.5.2.RELEASE</spring.starter.version>-->
   </properties>
 
-<!--
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
     <version>1.5.2.RELEASE</version>
   </parent>
--->
 
-  <dependencyManagement>
     <dependencies>
       <!--Spring-->
       <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-web</artifactId>
-        <version>${spring.starter.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-batch</artifactId>
-        <version>${spring.starter.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-data-jpa</artifactId>
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-core</artifactId>
         <version>2.8.7</version>
       </dependency>
+      <!--Tests-->
       <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-data-jpa</artifactId>
-        <version>${spring.starter.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.vlad</groupId>
-        <artifactId>basis</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>3.8.1</version>
+        <scope>test</scope>
       </dependency>
     </dependencies>
-  </dependencyManagement>
 
-  <dependencies>
-    <!--Tests-->
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
+  <build>
+    <plugins>
+      <!--Prevent IDEA from permanent switching to language level 1.5-->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.5.1</version>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <version>1.5.2.RELEASE</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>repackage</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+    <resources>
+      <resource>
+        <directory>src/main/resources/</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+  </build>
 
   <profiles>
     <profile>
@@ -84,7 +95,7 @@
       <build>
         <resources>
           <resource>
-            <directory>web/src/main/resources/database.properties</directory>
+            <directory>src/main/resources/database/</directory>
             <excludes></excludes>
           </resource>
         </resources>
@@ -101,20 +112,5 @@
       </dependencies>
     </profile>
   </profiles>
-
-  <build>
-    <plugins>
-      <!--Prevent IDEA from permanent switching to language level 1.5-->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.5.1</version>
-        <configuration>
-          <source>1.8</source>
-          <target>1.8</target>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 
 </project>
