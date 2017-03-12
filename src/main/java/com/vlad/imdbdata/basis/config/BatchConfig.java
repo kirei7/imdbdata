@@ -1,9 +1,11 @@
 package com.vlad.imdbdata.basis.config;
 
-import com.vlad.imdbdata.basis.batch.MovieItemProcessor;
-import com.vlad.imdbdata.basis.batch.RemoteMovieItemReader;
+import com.vlad.imdbdata.basis.batch.CustomItemProcessor;
+import com.vlad.imdbdata.basis.batch.CustomJobFactory;
+import com.vlad.imdbdata.basis.batch.reader.RemoteItemReader;
+import com.vlad.imdbdata.basis.batch.reader.SeriesReader;
 import com.vlad.imdbdata.basis.entity.MediaInfoEntity;
-import com.vlad.imdbdata.basis.repos.MediaInfoRepository;
+import com.vlad.imdbdata.basis.repo.MediaInfoRepository;
 import com.vlad.imdbdata.basis.service.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,13 +15,13 @@ import org.springframework.batch.core.configuration.annotation.EnableBatchProces
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.data.RepositoryItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
@@ -37,15 +39,15 @@ public class BatchConfig {
     @Autowired
     private StepBuilderFactory stepBuilderFactory;
     @Autowired
-    private Environment env;
-    @Autowired
     private MediaInfoRepository mediaInfoRepository;
+    @Autowired
+    private CustomJobFactory customJobFactory;
 
     @Bean
     public Map<MediaType, Job> jobs() {
         Map<MediaType, Job> jobs = new HashMap<>();
         jobs.put(MediaType.MOVIE, movieJob());
-        //TODO add seriesJob
+        jobs.put(MediaType.SERIES, seriesJob());
         return jobs;
     }
 
@@ -53,31 +55,36 @@ public class BatchConfig {
     public Job movieJob() {
         return jobBuilderFactory.get("movieJob")
                 .incrementer(new RunIdIncrementer())
-                .flow(movieStep1())
+                .flow(step1(MediaType.MOVIE))
+                .end()
+                .build();
+    }
+    @Bean
+    public Job seriesJob() {
+        return jobBuilderFactory.get("movieJob")
+                .incrementer(new RunIdIncrementer())
+                .flow(step1(MediaType.SERIES))
                 .end()
                 .build();
     }
 
     @Bean
-    public Step movieStep1() {
-        return stepBuilderFactory.get("movieStep1")
+    public Step step1(MediaType type) {
+        return stepBuilderFactory.get("step1")
                 .<Map<String, String>, MediaInfoEntity> chunk(1)
-                .reader(movieReader(env))
+                .reader(movieReader(type))
                 .processor(processor())
                 .writer(writer())
                 .build();
     }
 
     @Bean
-    public ItemReader<Map<String, String>> movieReader(Environment env) {
-        return new RemoteMovieItemReader(
-                env.getProperty("remote.api.url"),
-                restTemplate()
-        );
+    public ItemReader<Map<String, String>> movieReader(MediaType type) {
+        return customJobFactory.create(type);
     }
     @Bean
-    public MovieItemProcessor processor() {
-        return new MovieItemProcessor();
+    public ItemProcessor processor() {
+        return new CustomItemProcessor();
     }
     @Bean
     public RepositoryItemWriter<MediaInfoEntity> writer() {

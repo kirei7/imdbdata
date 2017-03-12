@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @Configuration
 @Import(BatchConfig.class)
-@EnableJpaRepositories("com.vlad.imdbdata.basis.repos")
+@EnableJpaRepositories("com.vlad.imdbdata.basis.repo")
 @EntityScan("com.vlad.imdbdata.basis.entity")
 @ComponentScan("com.vlad.imdbdata.basis")
 public class DomainConfig {

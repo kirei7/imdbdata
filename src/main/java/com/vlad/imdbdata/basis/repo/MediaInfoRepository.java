@@ -1,4 +1,4 @@
-package com.vlad.imdbdata.basis.repos;
+package com.vlad.imdbdata.basis.repo;
 
 import com.vlad.imdbdata.basis.entity.MediaInfoEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
