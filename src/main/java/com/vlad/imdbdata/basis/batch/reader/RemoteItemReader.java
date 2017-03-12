@@ -14,7 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 //@Scope("step")
@@ -22,10 +24,11 @@ public class RemoteItemReader implements ItemReader<Map<String, String>> {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(RemoteItemReader.class);
 
-    private final String apiUrl;
-    private final RestTemplate restTemplate;
-    private Map<String, String> data;
-    private int index = 0;
+    protected final String apiUrl;
+    protected final RestTemplate restTemplate;
+    protected List<Map<String, String>> data;
+    protected int index;
+    protected boolean doneDownloading;
 
     public RemoteItemReader(String apiUrl, RestTemplate restTemplate) {
         this.apiUrl = apiUrl;
@@ -35,33 +38,34 @@ public class RemoteItemReader implements ItemReader<Map<String, String>> {
     //here all connections and data fetching occurs
     @BeforeStep
     public void beforeStep(final StepExecution stepExecution) {
-        Map<String, JobParameter> parameters = stepExecution
-                .getJobExecution()
-                .getJobParameters()
-                .getParameters();
-        String url = makeUrl(apiUrl, parameters);
-        data = fetchDataFromRemote(url);
-        /*
-        since we can obtain short plot and full plot only separately
-        we have to execute second query
-        */
-        Map<String, String> additionalData = fetchDataFromRemote(
-                url + "&plot=full&tomatoes=true"
-        );
-        DataMapper.mapAdditionalData(data,additionalData);
+        data = null;
         index = 0;
+        doneDownloading = false;
+        LOGGER.debug("BEFORE EXECUTED");
+        if (data == null) {
+            Map<String, JobParameter> parameters = stepExecution
+                    .getJobExecution()
+                    .getJobParameters()
+                    .getParameters();
+            downloadData(
+                    makeUrl(apiUrl, parameters)
+            );
+        }
     }
 
     @Override
     public Map<String, String> read()
             throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
-        if (index != 0) return null;
+        if (index >= data.size()) {
+            return null;
+        }
+        Map<String, String> result = data.get(index);
+        LOGGER.info("read() returns: " + result.toString());
         index++;
-        LOGGER.info("read() returns: " + data.toString());
-        return data;
+        return result;
     }
 
-    private String makeUrl(String apiUrl, Map<String, JobParameter> parameters) {
+    protected String makeUrl(String apiUrl, Map<String, JobParameter> parameters) {
         StringBuilder sb = new StringBuilder();
         sb.append(apiUrl)
                 .append("?")
@@ -78,14 +82,22 @@ public class RemoteItemReader implements ItemReader<Map<String, String>> {
         }
         return sb.toString();
     }
-    private Map<String, String> fetchDataFromRemote(String url) {
-        ResponseEntity<String> response = restTemplate.getForEntity(
-                url,
-                String.class
+    protected Map<String, String> fetchSingleRow(String url) {
+        /*
+        since we can obtain short plot and full plot only separately
+        we have to execute second query
+        */
+        Map<String, String> result = DataMapper.mapFromJson(
+                restTemplate.getForEntity(url,String.class).getBody()
         );
-        return DataMapper.mapFromJson(response.getBody());
+        url += "&plot=full&tomatoes=true";
+        DataMapper.mapAdditionalData(
+                result,
+                DataMapper.mapFromJson(restTemplate.getForEntity(url,String.class).getBody())
+        );
+        return result;
     }
-    private static class DataMapper {
+    protected static class DataMapper {
         static Map<String, String> mapFromJson(String source) {
             Map<String, String> map = null;
             try {
@@ -107,5 +119,16 @@ public class RemoteItemReader implements ItemReader<Map<String, String>> {
             additionalData.remove("Plot");
             data.putAll(additionalData);
         }
+    }
+    protected void downloadData(String url) {
+        //the purpose of this cycle is to fetch a
+        //single row of data on each iteration
+        data = new ArrayList<>(1);
+        do {
+            data.add(fetchSingleRow(url));
+            //right now it's hardcoded that there is only one
+            //entity in a response to a 'movie' type query
+            doneDownloading = true;
+        } while (!doneDownloading);
     }
 }
