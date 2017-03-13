@@ -30,7 +30,6 @@ public class MediaInfoReader implements ItemReader<Map<String, String>> {
     public MediaInfoReader(String apiUrl, RestTemplate restTemplate) {
         this.apiUrl = apiUrl;
         this.restTemplate = restTemplate;
-        LOGGER.debug("Created " + this.getClass().getSimpleName());
     }
 
     //here all connections and data fetching occurs
@@ -102,13 +101,13 @@ public class MediaInfoReader implements ItemReader<Map<String, String>> {
     }
     protected static class DataMapper {
         /*static Map<String, String> mapFromJson(String source) {
-            Map<String, String> map = null;
+            Map<String, String> mapToEntity = null;
             try {
-                map = new ObjectMapper().readValue(source, HashMap.class);
+                mapToEntity = new ObjectMapper().readValue(source, HashMap.class);
             } catch (IOException ex) {
                 LOGGER.error(ex.getMessage());
             }
-            return map;
+            return mapToEntity;
         }*/
         static <T> T mapFromJson(String source, Class<T> resultType) {
             T result = null;

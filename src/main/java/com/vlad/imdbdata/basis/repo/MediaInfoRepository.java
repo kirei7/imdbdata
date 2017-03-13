@@ -8,5 +8,4 @@ import java.util.List;
 public interface MediaInfoRepository extends JpaRepository<MediaInfoEntity, String> {
     MediaInfoEntity findByImdbId(String imdbId);
     List<MediaInfoEntity> findByType(String type);
-
 }

@@ -1,5 +1,8 @@
 package com.vlad.imdbdata.web.controller;
 
+import com.vlad.imdbdata.basis.entity.MediaInfoEntity;
+import com.vlad.imdbdata.basis.entity.SeriesEpisodeInfoEntity;
+import com.vlad.imdbdata.basis.repo.EpisodeInfoRepository;
 import com.vlad.imdbdata.basis.repo.MediaInfoRepository;
 import com.vlad.imdbdata.basis.service.MediaInfoService;
 import com.vlad.imdbdata.basis.service.MediaType;
@@ -10,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -27,9 +32,21 @@ public class ImportMediaInfoController {
     ) {
         service.importMedia(title, year, mediaType);
         LOGGER.info("Entities count after import: " + service.itemsCount());
-        LOGGER.debug("Episodes count:" + repository.findByType("episode"));
+    }
+
+    @RequestMapping("/series")
+    public List<SeriesEpisodeInfoEntity> getSeriesEpisodesById(
+            //@RequestParam(name = "seriesId") String seriesID
+    ) {
+        return seriesRepository.findAll();
+    }
+    @RequestMapping("/all")
+    public List<MediaInfoEntity> getAll() {
+        return mediaInfoRepository.findAll();
     }
 
     @Autowired
-    private MediaInfoRepository repository;
+    private EpisodeInfoRepository seriesRepository;
+    @Autowired
+    private MediaInfoRepository mediaInfoRepository;
 }

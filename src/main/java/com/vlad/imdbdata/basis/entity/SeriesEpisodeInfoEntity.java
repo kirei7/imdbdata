@@ -1,8 +1,57 @@
 package com.vlad.imdbdata.basis.entity;
 
-import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Entity;
 
+@Entity
 public class SeriesEpisodeInfoEntity extends MediaInfoEntity {
 
-    private List<List<MediaInfoEntity>> seriesList;
+    private Integer seasonNum;
+    private Integer episodeNum;
+
+    @Column(length = 16)
+    private String seriesId;
+
+    public static SeriesEntityBuilder entityBuilder() {
+        return new SeriesEntityBuilder();
+    }
+
+    public static class SeriesEntityBuilder extends EntityBuilder {
+        private SeriesEpisodeInfoEntity entity;
+        public SeriesEntityBuilder() {
+            entity = new SeriesEpisodeInfoEntity();
+        }
+        public SeriesEntityBuilder withSeasonNum(Integer seasonNum) {
+            entity.setSeasonNum(seasonNum);
+            return this;
+        }
+        public SeriesEntityBuilder withEpisodeNum(Integer episodeNum) {
+            entity.setEpisodeNum(episodeNum);
+            return this;
+        }
+        public SeriesEntityBuilder withSeriesId(String seriesNum) {
+            entity.setSeriesId(seriesNum);
+            return this;
+        }
+    }
+
+    public void setSeasonNum(Integer seasonNum) {
+        this.seasonNum = seasonNum;
+    }
+    public void setEpisodeNum(Integer episodeNum) {
+        this.episodeNum = episodeNum;
+    }
+    public void setSeriesId(String seriesId) {
+        this.seriesId = seriesId;
+    }
+
+    public Integer getSeasonNum() {
+        return seasonNum;
+    }
+    public Integer getEpisodeNum() {
+        return episodeNum;
+    }
+    public String getSeriesId() {
+        return seriesId;
+    }
 }

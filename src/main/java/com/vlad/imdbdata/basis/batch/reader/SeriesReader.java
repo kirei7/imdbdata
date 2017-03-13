@@ -13,7 +13,6 @@ public class SeriesReader extends MediaInfoReader {
 
     public SeriesReader(String apiUrl, RestTemplate restTemplate) {
         super(apiUrl, restTemplate);
-        LOGGER.debug("Created " + this.getClass().getSimpleName());
     }
 
     @Override

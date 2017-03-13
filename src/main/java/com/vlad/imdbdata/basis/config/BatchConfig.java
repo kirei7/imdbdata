@@ -3,6 +3,8 @@ package com.vlad.imdbdata.basis.config;
 import com.vlad.imdbdata.basis.batch.CustomItemProcessor;
 import com.vlad.imdbdata.basis.batch.CustomReaderFactory;
 import com.vlad.imdbdata.basis.entity.MediaInfoEntity;
+import com.vlad.imdbdata.basis.entity.SeriesEpisodeInfoEntity;
+import com.vlad.imdbdata.basis.repo.EpisodeInfoRepository;
 import com.vlad.imdbdata.basis.repo.MediaInfoRepository;
 import com.vlad.imdbdata.basis.service.MediaType;
 import org.slf4j.Logger;
@@ -39,6 +41,8 @@ public class BatchConfig {
     @Autowired
     private MediaInfoRepository mediaInfoRepository;
     @Autowired
+    private EpisodeInfoRepository episodeInfoRepository;
+    @Autowired
     private CustomReaderFactory customReaderFactory;
 
     @Bean
@@ -63,7 +67,7 @@ public class BatchConfig {
                 .<Map<String, String>, MediaInfoEntity> chunk(1)
                 .reader(movieReader())
                 .processor(processor())
-                .writer(writer())
+                .writer(commonWriter())
                 .build();
     }
     @Bean
@@ -75,11 +79,11 @@ public class BatchConfig {
         return new CustomItemProcessor();
     }
     @Bean
-    public RepositoryItemWriter<MediaInfoEntity> writer() {
+    public RepositoryItemWriter<MediaInfoEntity> commonWriter() {
         RepositoryItemWriter writer = new RepositoryItemWriter() {
             @Override
             public void write(List items) throws Exception{
-                LOGGER.info("Write entity do DB");
+                LOGGER.info("Write entity do common repo");
                 super.write(items);
             }
         };
@@ -99,16 +103,30 @@ public class BatchConfig {
     @Bean
     public Step seriesStep() {
         return stepBuilderFactory.get("series step 1")
-                .<Map<String, String>, MediaInfoEntity> chunk(1)
+                .<Map<String, String>, SeriesEpisodeInfoEntity> chunk(1)
                 .reader(seriesReader())
                 .processor(processor())
-                .writer(writer())
+                .writer(seriesWriter())
                 .build();
     }
     @Bean
     public ItemReader<Map<String, String>> seriesReader() {
         return customReaderFactory.create(MediaType.SERIES);
     }
+    @Bean
+    public RepositoryItemWriter<SeriesEpisodeInfoEntity> seriesWriter() {
+        RepositoryItemWriter writer = new RepositoryItemWriter() {
+            @Override
+            public void write(List items) throws Exception{
+                LOGGER.info("Write entity do episodes repo");
+                super.write(items);
+            }
+        };
+        writer.setRepository(episodeInfoRepository);
+        writer.setMethodName("save");
+        return writer;
+    }
+
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();

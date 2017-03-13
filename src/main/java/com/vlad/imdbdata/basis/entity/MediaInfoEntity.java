@@ -9,7 +9,7 @@ public class MediaInfoEntity {
     }
 
     @Id
-    @Column(name = "ID")
+    @Column(name = "ID", length = 16)
     protected String imdbId;
 
     @Column(length = 512)
@@ -95,28 +95,6 @@ public class MediaInfoEntity {
         }
 
         public MediaInfoEntity build() {
-            /*if (obj.plotShort.equals("N/A")) obj.plotShort = null;
-            if (obj.plotFull.equals("N/A")) obj.plotFull = null;
-            if (obj.title.equals("N/A")) obj.title = null;
-            if (obj.year.equals("N/A")) obj.year = null;
-            if (obj.rated.equals("N/A")) obj.rated = null;
-            if (obj.runtime.equals("N/A")) obj.runtime = null;
-            if (obj.director.equals("N/A")) obj.director = null;
-            if (obj.awards.equals("N/A")) obj.awards = null;
-            if (obj.posterUrl.equals("N/A")) obj.posterUrl = null;
-            if (obj.type.equals("N/A")) obj.type = null;
-            if (obj.response.equals("N/A")) obj.response = null;
-            if (obj.genre.equals("N/A")) obj.genre = null;
-            if (obj.writer.equals("N/A")) obj.writer = null;
-            if (obj.actors.equals("N/A")) obj.actors = null;
-            if (obj.language.equals("N/A")) obj.language = null;
-            if (obj.country.equals("N/A")) obj.country = null;
-            if (obj.tomatoConsensus.equals("N/A")) obj.tomatoConsensus = null;
-            if (obj.boxOffice.equals("N/A")) obj.boxOffice = null;
-            if (obj.production.equals("N/A")) obj.production = null;
-            if (obj.tomatoUrl.equals("N/A")) obj.tomatoUrl = null;
-            if (obj.website.equals("N/A")) obj.website = null;*/
-            
             return obj;
         }
 
