@@ -17,6 +17,7 @@ public class SeriesEpisodeInfoEntity extends MediaInfoEntity {
     }
 
     public static class SeriesEntityBuilder extends EntityBuilder {
+        //TODO там чет кроме entity еще есть обьект obj
         private SeriesEpisodeInfoEntity entity;
         public SeriesEntityBuilder() {
             entity = new SeriesEpisodeInfoEntity();
@@ -32,6 +33,9 @@ public class SeriesEpisodeInfoEntity extends MediaInfoEntity {
         public SeriesEntityBuilder withSeriesId(String seriesNum) {
             entity.setSeriesId(seriesNum);
             return this;
+        }
+        public SeriesEpisodeInfoEntity build() {
+            return entity;
         }
     }
 
