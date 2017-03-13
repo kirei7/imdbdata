@@ -1,9 +1,7 @@
 package com.vlad.imdbdata.basis.config;
 
 import com.vlad.imdbdata.basis.batch.CustomItemProcessor;
-import com.vlad.imdbdata.basis.batch.CustomJobFactory;
-import com.vlad.imdbdata.basis.batch.reader.RemoteItemReader;
-import com.vlad.imdbdata.basis.batch.reader.SeriesReader;
+import com.vlad.imdbdata.basis.batch.CustomReaderFactory;
 import com.vlad.imdbdata.basis.entity.MediaInfoEntity;
 import com.vlad.imdbdata.basis.repo.MediaInfoRepository;
 import com.vlad.imdbdata.basis.service.MediaType;
@@ -41,7 +39,7 @@ public class BatchConfig {
     @Autowired
     private MediaInfoRepository mediaInfoRepository;
     @Autowired
-    private CustomJobFactory customJobFactory;
+    private CustomReaderFactory customReaderFactory;
 
     @Bean
     public Map<MediaType, Job> jobs() {
@@ -55,32 +53,22 @@ public class BatchConfig {
     public Job movieJob() {
         return jobBuilderFactory.get("movieJob")
                 .incrementer(new RunIdIncrementer())
-                .flow(step1(MediaType.MOVIE))
+                .flow(movieStep())
                 .end()
                 .build();
     }
     @Bean
-    public Job seriesJob() {
-        return jobBuilderFactory.get("movieJob")
-                .incrementer(new RunIdIncrementer())
-                .flow(step1(MediaType.SERIES))
-                .end()
-                .build();
-    }
-
-    @Bean
-    public Step step1(MediaType type) {
-        return stepBuilderFactory.get("step1")
+    public Step movieStep() {
+        return stepBuilderFactory.get("movie step 1")
                 .<Map<String, String>, MediaInfoEntity> chunk(1)
-                .reader(movieReader(type))
+                .reader(movieReader())
                 .processor(processor())
                 .writer(writer())
                 .build();
     }
-
     @Bean
-    public ItemReader<Map<String, String>> movieReader(MediaType type) {
-        return customJobFactory.create(type);
+    public ItemReader<Map<String, String>> movieReader() {
+        return customReaderFactory.create(MediaType.MOVIE);
     }
     @Bean
     public ItemProcessor processor() {
@@ -91,13 +79,35 @@ public class BatchConfig {
         RepositoryItemWriter writer = new RepositoryItemWriter() {
             @Override
             public void write(List items) throws Exception{
-                    LOGGER.debug("WRITE!");
-                    super.write(items);
+                LOGGER.info("Write entity do DB");
+                super.write(items);
             }
         };
         writer.setRepository(mediaInfoRepository);
         writer.setMethodName("save");
         return writer;
+    }
+
+    @Bean
+    public Job seriesJob() {
+        return jobBuilderFactory.get("seriesJob")
+                .incrementer(new RunIdIncrementer())
+                .flow(seriesStep())
+                .end()
+                .build();
+    }
+    @Bean
+    public Step seriesStep() {
+        return stepBuilderFactory.get("series step 1")
+                .<Map<String, String>, MediaInfoEntity> chunk(1)
+                .reader(seriesReader())
+                .processor(processor())
+                .writer(writer())
+                .build();
+    }
+    @Bean
+    public ItemReader<Map<String, String>> seriesReader() {
+        return customReaderFactory.create(MediaType.SERIES);
     }
     @Bean
     public RestTemplate restTemplate() {

@@ -10,7 +10,6 @@ import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.NonTransientResourceException;
 import org.springframework.batch.item.ParseException;
 import org.springframework.batch.item.UnexpectedInputException;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
@@ -19,20 +18,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-//@Scope("step")
-public class RemoteItemReader implements ItemReader<Map<String, String>> {
+public class MediaInfoReader implements ItemReader<Map<String, String>> {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(RemoteItemReader.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(MediaInfoReader.class);
 
     protected final String apiUrl;
     protected final RestTemplate restTemplate;
     protected List<Map<String, String>> data;
     protected int index;
-    protected boolean doneDownloading;
 
-    public RemoteItemReader(String apiUrl, RestTemplate restTemplate) {
+    public MediaInfoReader(String apiUrl, RestTemplate restTemplate) {
         this.apiUrl = apiUrl;
         this.restTemplate = restTemplate;
+        LOGGER.debug("Created " + this.getClass().getSimpleName());
     }
 
     //here all connections and data fetching occurs
@@ -40,8 +38,6 @@ public class RemoteItemReader implements ItemReader<Map<String, String>> {
     public void beforeStep(final StepExecution stepExecution) {
         data = null;
         index = 0;
-        doneDownloading = false;
-        LOGGER.debug("BEFORE EXECUTED");
         if (data == null) {
             Map<String, JobParameter> parameters = stepExecution
                     .getJobExecution()
@@ -70,7 +66,10 @@ public class RemoteItemReader implements ItemReader<Map<String, String>> {
         sb.append(apiUrl)
                 .append("?")
                 .append("t=")
-                .append(parameters.get("title").getValue());
+                .append(parameters.get("title").getValue())
+                .append("&type=")
+                .append(parameters.get("type").getValue());
+
         JobParameter yp = parameters.get("year");
 
         if (yp != null) {
@@ -88,17 +87,21 @@ public class RemoteItemReader implements ItemReader<Map<String, String>> {
         we have to execute second query
         */
         Map<String, String> result = DataMapper.mapFromJson(
-                restTemplate.getForEntity(url,String.class).getBody()
+                restTemplate.getForEntity(url,String.class).getBody(),
+                HashMap.class
         );
         url += "&plot=full&tomatoes=true";
         DataMapper.mapAdditionalData(
                 result,
-                DataMapper.mapFromJson(restTemplate.getForEntity(url,String.class).getBody())
+                DataMapper.mapFromJson(
+                        restTemplate.getForEntity(url,String.class).getBody(),
+                        HashMap.class
+                )
         );
         return result;
     }
     protected static class DataMapper {
-        static Map<String, String> mapFromJson(String source) {
+        /*static Map<String, String> mapFromJson(String source) {
             Map<String, String> map = null;
             try {
                 map = new ObjectMapper().readValue(source, HashMap.class);
@@ -106,6 +109,15 @@ public class RemoteItemReader implements ItemReader<Map<String, String>> {
                 LOGGER.error(ex.getMessage());
             }
             return map;
+        }*/
+        static <T> T mapFromJson(String source, Class<T> resultType) {
+            T result = null;
+            try {
+                result = new ObjectMapper().readValue(source, resultType);
+            } catch (IOException ex) {
+                LOGGER.error(ex.getMessage());
+            }
+            return result;
         }
         //adds additional data to 'data' map
         static void mapAdditionalData(
@@ -124,11 +136,6 @@ public class RemoteItemReader implements ItemReader<Map<String, String>> {
         //the purpose of this cycle is to fetch a
         //single row of data on each iteration
         data = new ArrayList<>(1);
-        do {
-            data.add(fetchSingleRow(url));
-            //right now it's hardcoded that there is only one
-            //entity in a response to a 'movie' type query
-            doneDownloading = true;
-        } while (!doneDownloading);
+        data.add(fetchSingleRow(url));
     }
 }

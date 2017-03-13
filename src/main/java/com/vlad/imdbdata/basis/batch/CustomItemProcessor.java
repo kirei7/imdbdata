@@ -17,7 +17,7 @@ public class CustomItemProcessor implements ItemProcessor<Map<String, String>, M
     @Override
     public MediaInfoEntity process(Map<String, String> map) throws Exception {
         MediaInfoEntity entity = EntityMapper.mapToEntity(map);
-        LOGGER.info("process() converted map to entity: " + entity.getImdbId());
+        LOGGER.info("processed map, converted to entity: " + entity.getImdbId());
         return entity;
     }
 

@@ -1,4 +1,4 @@
-package com.vlad.imdbdata.basis.controller;
+package com.vlad.imdbdata.web.controller;
 
 import com.vlad.imdbdata.basis.repo.MediaInfoRepository;
 import com.vlad.imdbdata.basis.service.MediaInfoService;
@@ -26,15 +26,10 @@ public class ImportMediaInfoController {
             @RequestParam(name = "year", required = false) Integer year
     ) {
         service.importMedia(title, year, mediaType);
-        LOGGER.debug(Integer.toString(repository.findAll().size()));
+        LOGGER.info("Entities count after import: " + service.itemsCount());
+        LOGGER.debug("Episodes count:" + repository.findByType("episode"));
     }
 
-    //test
     @Autowired
     private MediaInfoRepository repository;
-    /*@PostConstruct
-    public void test() {
-        service.importMedia("hannibal", null, MediaType.MOVIE);
-        //LOGGER.debug(repository.findByImdbId("tt0212985").get(0).getMediaInfo().get("Title"));
-    }*/
 }

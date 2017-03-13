@@ -1,5 +1,6 @@
 package com.vlad.imdbdata.basis.service;
 
+import com.vlad.imdbdata.basis.repo.MediaInfoRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
@@ -33,12 +34,15 @@ public class MediaInfoService {
     @Autowired
     private Map<MediaType, Job> jobs;
 
+    @Autowired
+    private MediaInfoRepository repository;
+
     public void importMedia(String title, Integer year, MediaType type) {
         Job job = jobs.get(type);
         try {
             jobLauncher.run(
                     job,
-                    new JobParameters(makeParameters(title, year))
+                    new JobParameters(makeParameters(title, year, type))
             );
         } catch (JobInstanceAlreadyCompleteException
                 | JobExecutionAlreadyRunningException
@@ -50,10 +54,15 @@ public class MediaInfoService {
 
     }
 
-    protected Map<String, JobParameter> makeParameters(String title, Integer year) {
+    public long itemsCount() {
+        return repository.count();
+    }
+
+    protected Map<String, JobParameter> makeParameters(String title, Integer year, MediaType type) {
         Map<String, JobParameter> map = new HashMap<String, JobParameter>() {
             {
                 put("title", new JobParameter(title));
+                put("type", new JobParameter(type.toString()));
             }
         };
         if (year != null) map.put("year", new JobParameter(new Long(year)));
