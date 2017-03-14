@@ -1,11 +1,9 @@
 package com.vlad.imdbdata.basis.config;
 
-import com.vlad.imdbdata.basis.batch.CustomReaderFactory;
-import com.vlad.imdbdata.basis.batch.processor.CommonMediaInfoProcessor;
-import com.vlad.imdbdata.basis.batch.processor.SeriesProcessor;
-import com.vlad.imdbdata.basis.entity.CommonMediaInfo;
-import com.vlad.imdbdata.basis.entity.SeriesEpisodeInfo;
-import com.vlad.imdbdata.basis.repo.EpisodeInfoRepository;
+import com.vlad.imdbdata.basis.config.stepfactory.CommonInfoStepFactory;
+import com.vlad.imdbdata.basis.config.stepfactory.EpisodeStepFactory;
+import com.vlad.imdbdata.basis.config.stepfactory.SeriesStepFactory;
+import com.vlad.imdbdata.basis.repo.EpisodeRepository;
 import com.vlad.imdbdata.basis.service.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,17 +13,12 @@ import org.springframework.batch.core.configuration.annotation.EnableBatchProces
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
-import org.springframework.batch.item.ItemProcessor;
-import org.springframework.batch.item.ItemReader;
-import org.springframework.batch.item.data.RepositoryItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Configuration
@@ -39,109 +32,46 @@ public class BatchConfig {
     @Autowired
     private StepBuilderFactory stepBuilderFactory;
     @Autowired
-    private MediaInfoRepository mediaInfoRepository;
+    private EpisodeRepository episodeInfoRepository;
     @Autowired
-    private EpisodeInfoRepository episodeInfoRepository;
+    private CommonInfoStepFactory commonInfoStepFactory;
     @Autowired
-    private CustomReaderFactory customReaderFactory;
+    private SeriesStepFactory seriesStepFactory;
+    @Autowired
+    private EpisodeStepFactory episodeStepFactory;
 
     @Bean
     public Map<MediaType, Job> jobs() {
         Map<MediaType, Job> jobs = new HashMap<>();
-        jobs.put(MediaType.MOVIE, movieJob());
+        jobs.put(MediaType.MOVIE, commonInfoJob());
         jobs.put(MediaType.SERIES, seriesJob());
         return jobs;
     }
 
     @Bean
-    public Job movieJob() {
-        return jobBuilderFactory.get("movieJob")
+    public Job commonInfoJob() {
+        return jobBuilderFactory.get("commonInfoJob")
                 .incrementer(new RunIdIncrementer())
-                .flow(movieStep())
+                .flow(commonInfoStep())
                 .end()
                 .build();
     }
-
     @Bean
-    public Step movieStep() {
-        return stepBuilderFactory.get("movie step 1")
-                .<Map<String, String>, CommonMediaInfo>chunk(1)
-                .reader(movieReader())
-                .processor(movieProcessor())
-                .writer(commonWriter())
-                .build();
-    }
-
-    @Bean
-    public ItemReader<Map<String, String>> movieReader() {
-        return customReaderFactory.create(MediaType.MOVIE);
-    }
-
-    @Bean
-    public ItemProcessor movieProcessor() {
-        return new CommonMediaInfoProcessor();
-    }
-
-    @Bean
-    public RepositoryItemWriter<CommonMediaInfo> commonWriter() {
-        RepositoryItemWriter writer = new RepositoryItemWriter() {
-            @Override
-            public void write(List items) throws Exception {
-                LOGGER.info("Write entity do common repo");
-                super.write(items);
-            }
-        };
-        writer.setRepository(mediaInfoRepository);
-        writer.setMethodName("save");
-        return writer;
+    public Step commonInfoStep() {
+        return commonInfoStepFactory.createStep();
     }
 
     @Bean
     public Job seriesJob() {
         return jobBuilderFactory.get("seriesJob")
                 .incrementer(new RunIdIncrementer())
-                .flow(movieStep())
-                .next(seriesStep())
+                .flow(seriesStep())
+                .next(episodesStep())
                 .end()
                 .build();
     }
-
     @Bean
-    public Step seriesStep() {
-        return stepBuilderFactory.get("series step 1")
-                .<Map<String, String>, SeriesEpisodeInfo>chunk(1)
-                .reader(seriesReader())
-                .processor(seriesProcessor())
-                .writer(seriesWriter())
-                .build();
-    }
-
+    public Step seriesStep() { return seriesStepFactory.createStep(); }
     @Bean
-    public ItemReader<Map<String, String>> seriesReader() {
-        return customReaderFactory.create(MediaType.SERIES);
-    }
-
-    @Bean
-    public ItemProcessor seriesProcessor() {
-        return new SeriesProcessor();
-    }
-
-    @Bean
-    public RepositoryItemWriter<SeriesEpisodeInfo> seriesWriter() {
-        RepositoryItemWriter writer = new RepositoryItemWriter() {
-            @Override
-            public void write(List items) throws Exception {
-                LOGGER.info("Write entity do episodes repo");
-                super.write(items);
-            }
-        };
-        writer.setRepository(episodeInfoRepository);
-        writer.setMethodName("save");
-        return writer;
-    }
-
-    @Bean
-    public RestTemplate restTemplate() {
-        return new RestTemplate();
-    }
+    public Step episodesStep() { return episodeStepFactory.createStep(); }
 }
