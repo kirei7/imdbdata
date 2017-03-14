@@ -4,8 +4,8 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity(name = "MEDIA_INFO_ENTITY")
-public class MediaInfoEntity {
-    public MediaInfoEntity() {
+public class CommonMediaInfo implements Cloneable{
+    public CommonMediaInfo() {
     }
 
     @Id
@@ -71,10 +71,10 @@ public class MediaInfoEntity {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (!(o instanceof MediaInfoEntity))
+        if (!(o instanceof CommonMediaInfo))
             return false;
 
-        MediaInfoEntity that = (MediaInfoEntity) o;
+        CommonMediaInfo that = (CommonMediaInfo) o;
 
         return imdbId.equals(that.imdbId);
     }
@@ -84,17 +84,22 @@ public class MediaInfoEntity {
         return imdbId.hashCode();
     }
 
+    @Override
+    public Object clone() {
+        return null;
+    }
+
     public static EntityBuilder entityBuilder() {
         return new EntityBuilder();
     }
     public static class EntityBuilder {
-        private MediaInfoEntity obj;
+        protected CommonMediaInfo obj;
 
         EntityBuilder() {
-            obj = new MediaInfoEntity();
+            obj = new CommonMediaInfo();
         }
 
-        public MediaInfoEntity build() {
+        public CommonMediaInfo build() {
             return obj;
         }
 
@@ -242,6 +247,47 @@ public class MediaInfoEntity {
             obj.setTomatoUserReviews(tomatoUserReviews);
             return this;
         }
+    }
+
+    //copy constructor
+
+    public CommonMediaInfo(CommonMediaInfo other) {
+        this.imdbId = other.imdbId;
+        this.plotShort = other.plotShort;
+        this.plotFull = other.plotFull;
+        this.released = other.released;
+        this.title = other.title;
+        this.year = other.year;
+        this.rated = other.rated;
+        this.runtime = other.runtime;
+        this.director = other.director;
+        this.awards = other.awards;
+        this.posterUrl = other.posterUrl;
+        this.type = other.type;
+        this.response = other.response;
+        this.genre = other.genre;
+        this.writer = other.writer;
+        this.actors = other.actors;
+        this.language = other.language;
+        this.country = other.country;
+        this.imdbRating = other.imdbRating;
+        this.metaScore = other.metaScore;
+        this.imdbVotes = other.imdbVotes;
+        this.dvd = other.dvd;
+        this.tomatoImage = other.tomatoImage;
+        this.tomatoConsensus = other.tomatoConsensus;
+        this.boxOffice = other.boxOffice;
+        this.production = other.production;
+        this.tomatoUrl = other.tomatoUrl;
+        this.website = other.website;
+        this.tomatoRating = other.tomatoRating;
+        this.tomatoUserRating = other.tomatoUserRating;
+        this.tomatoMeter = other.tomatoMeter;
+        this.tomatoReviews = other.tomatoReviews;
+        this.tomatoFresh = other.tomatoFresh;
+        this.tomatoRotten = other.tomatoRotten;
+        this.tomatoUserMeter = other.tomatoUserMeter;
+        this.tomatoUserReviews = other.tomatoUserReviews;
     }
 
     //the whole bunch of accessors here!
@@ -533,4 +579,6 @@ public class MediaInfoEntity {
     public Integer getTomatoUserReviews() {
         return tomatoUserReviews;
     }
+
+
 }

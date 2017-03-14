@@ -12,7 +12,6 @@ import org.springframework.web.client.RestTemplate;
 public class CustomReaderFactory {
     private final String API_URL;
 
-    private Environment env;
     private RestTemplate restTemplate;
 
     @Autowired

@@ -1,7 +1,6 @@
 package com.vlad.imdbdata.basis.batch.processor;
 
-import com.vlad.imdbdata.basis.entity.MediaInfoEntity;
-import com.vlad.imdbdata.basis.entity.SeriesEpisodeInfoEntity;
+import com.vlad.imdbdata.basis.entity.SeriesEpisodeInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
@@ -11,7 +10,7 @@ import java.util.Map;
 /**
  * Created by vlad on 13.03.17.
  */
-public class SeriesProcessor implements ItemProcessor<Map<String, String>, SeriesEpisodeInfoEntity> {
+public class SeriesProcessor implements ItemProcessor<Map<String, String>, SeriesEpisodeInfo> {
     private static final Logger LOGGER = LoggerFactory.getLogger(SeriesProcessor.class);
 
     private CustomEntityMapper mapper;
@@ -21,8 +20,8 @@ public class SeriesProcessor implements ItemProcessor<Map<String, String>, Serie
     }
 
     @Override
-    public SeriesEpisodeInfoEntity process(Map<String, String> map) throws Exception {
-        SeriesEpisodeInfoEntity entity = mapper.mapToSeriesEntity(map);
+    public SeriesEpisodeInfo process(Map<String, String> map) throws Exception {
+        SeriesEpisodeInfo entity = mapper.mapToSeriesEntity(map);
         LOGGER.info("processed mapToEntity, converted to entity: " + entity.getImdbId());
         return entity;
     }

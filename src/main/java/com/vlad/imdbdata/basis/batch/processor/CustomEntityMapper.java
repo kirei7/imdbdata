@@ -1,7 +1,7 @@
 package com.vlad.imdbdata.basis.batch.processor;
 
-import com.vlad.imdbdata.basis.entity.MediaInfoEntity;
-import com.vlad.imdbdata.basis.entity.SeriesEpisodeInfoEntity;
+import com.vlad.imdbdata.basis.entity.CommonMediaInfo;
+import com.vlad.imdbdata.basis.entity.SeriesEpisodeInfo;
 import com.vlad.imdbdata.basis.service.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,20 +18,20 @@ import java.util.Map;
 public class CustomEntityMapper {
     private static final Logger LOGGER = LoggerFactory.getLogger(CustomEntityMapper.class);
 
-    public MediaInfoEntity mapToCommonEntity(Map<String, String> map) {
-            MediaInfoEntity.EntityBuilder builder
-                    = MediaInfoEntity.entityBuilder();
+    public CommonMediaInfo mapToCommonEntity(Map<String, String> map) {
+            CommonMediaInfo.EntityBuilder builder
+                    = CommonMediaInfo.entityBuilder();
             mapToCommonEntity(map, builder);
             return builder.build();
     }
-    public SeriesEpisodeInfoEntity mapToSeriesEntity(Map<String, String> map) {
-            SeriesEpisodeInfoEntity.SeriesEntityBuilder builder
-                    = SeriesEpisodeInfoEntity.entityBuilder();
+    public SeriesEpisodeInfo mapToSeriesEntity(Map<String, String> map) {
+            SeriesEpisodeInfo.SeriesEntityBuilder builder
+                    = SeriesEpisodeInfo.entityBuilder();
             mapToEpisodeEntity(map, builder);
             return builder.build();
     }
 
-    public MediaInfoEntity.EntityBuilder mapToCommonEntity(Map<String, String> map, MediaInfoEntity.EntityBuilder builder) {
+    public CommonMediaInfo.EntityBuilder mapToCommonEntity(Map<String, String> map, CommonMediaInfo.EntityBuilder builder) {
         SimpleDateFormat formatter = new SimpleDateFormat(
                 "dd MMM yyyy",
                 Locale.US
@@ -112,7 +112,7 @@ public class CustomEntityMapper {
                 .withResponse(map.get("Response"));
     }
 
-    public SeriesEpisodeInfoEntity.SeriesEntityBuilder mapToEpisodeEntity(Map<String, String> map, SeriesEpisodeInfoEntity.SeriesEntityBuilder builder) {
+    public SeriesEpisodeInfo.SeriesEntityBuilder mapToEpisodeEntity(Map<String, String> map, SeriesEpisodeInfo.SeriesEntityBuilder builder) {
         if (map.get("Type").toLowerCase().equals("episode")) {
             String str = map.get("Season");
             if (isValidInt(str))
@@ -123,17 +123,17 @@ public class CustomEntityMapper {
             str = map.get("seriesID");
             builder.withSeriesId(str);
         }
-        builder = (SeriesEpisodeInfoEntity.SeriesEntityBuilder) mapToCommonEntity(map, builder);
+        builder = (SeriesEpisodeInfo.SeriesEntityBuilder) mapToCommonEntity(map, builder);
         return builder;
     }
 
-    private MediaInfoEntity.EntityBuilder createBuilder(MediaType type) {
+    private CommonMediaInfo.EntityBuilder createBuilder(MediaType type) {
         switch (type) {
             case SERIES:
-                return SeriesEpisodeInfoEntity.entityBuilder();
+                return SeriesEpisodeInfo.entityBuilder();
             case MOVIE:
             default:
-                return MediaInfoEntity.entityBuilder();
+                return CommonMediaInfo.entityBuilder();
         }
 
     }

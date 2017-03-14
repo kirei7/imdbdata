@@ -4,7 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 
 @Entity
-public class SeriesEpisodeInfoEntity extends MediaInfoEntity {
+public class SeriesEpisodeInfo extends CommonMediaInfo {
 
     private Integer seasonNum;
     private Integer episodeNum;
@@ -12,15 +12,17 @@ public class SeriesEpisodeInfoEntity extends MediaInfoEntity {
     @Column(length = 16)
     private String seriesId;
 
+    public SeriesEpisodeInfo(){}
+
     public static SeriesEntityBuilder entityBuilder() {
         return new SeriesEntityBuilder();
     }
 
     public static class SeriesEntityBuilder extends EntityBuilder {
         //TODO там чет кроме entity еще есть обьект obj
-        private SeriesEpisodeInfoEntity entity;
+        protected SeriesEpisodeInfo entity;
         public SeriesEntityBuilder() {
-            entity = new SeriesEpisodeInfoEntity();
+            entity = new SeriesEpisodeInfo();
         }
         public SeriesEntityBuilder withSeasonNum(Integer seasonNum) {
             entity.setSeasonNum(seasonNum);
@@ -34,9 +36,13 @@ public class SeriesEpisodeInfoEntity extends MediaInfoEntity {
             entity.setSeriesId(seriesNum);
             return this;
         }
-        public SeriesEpisodeInfoEntity build() {
-            return entity;
+        public SeriesEpisodeInfo build() {
+            return new SeriesEpisodeInfo(super.build());
         }
+    }
+
+    public SeriesEpisodeInfo(CommonMediaInfo other) {
+        super(other);
     }
 
     public void setSeasonNum(Integer seasonNum) {

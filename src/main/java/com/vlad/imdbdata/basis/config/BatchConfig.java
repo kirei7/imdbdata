@@ -1,12 +1,11 @@
 package com.vlad.imdbdata.basis.config;
 
 import com.vlad.imdbdata.basis.batch.CustomReaderFactory;
-import com.vlad.imdbdata.basis.batch.processor.MovieProcessor;
+import com.vlad.imdbdata.basis.batch.processor.CommonMediaInfoProcessor;
 import com.vlad.imdbdata.basis.batch.processor.SeriesProcessor;
-import com.vlad.imdbdata.basis.entity.MediaInfoEntity;
-import com.vlad.imdbdata.basis.entity.SeriesEpisodeInfoEntity;
+import com.vlad.imdbdata.basis.entity.CommonMediaInfo;
+import com.vlad.imdbdata.basis.entity.SeriesEpisodeInfo;
 import com.vlad.imdbdata.basis.repo.EpisodeInfoRepository;
-import com.vlad.imdbdata.basis.repo.MediaInfoRepository;
 import com.vlad.imdbdata.basis.service.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,7 +65,7 @@ public class BatchConfig {
     @Bean
     public Step movieStep() {
         return stepBuilderFactory.get("movie step 1")
-                .<Map<String, String>, MediaInfoEntity>chunk(1)
+                .<Map<String, String>, CommonMediaInfo>chunk(1)
                 .reader(movieReader())
                 .processor(movieProcessor())
                 .writer(commonWriter())
@@ -80,11 +79,11 @@ public class BatchConfig {
 
     @Bean
     public ItemProcessor movieProcessor() {
-        return new MovieProcessor();
+        return new CommonMediaInfoProcessor();
     }
 
     @Bean
-    public RepositoryItemWriter<MediaInfoEntity> commonWriter() {
+    public RepositoryItemWriter<CommonMediaInfo> commonWriter() {
         RepositoryItemWriter writer = new RepositoryItemWriter() {
             @Override
             public void write(List items) throws Exception {
@@ -101,7 +100,8 @@ public class BatchConfig {
     public Job seriesJob() {
         return jobBuilderFactory.get("seriesJob")
                 .incrementer(new RunIdIncrementer())
-                .flow(seriesStep())
+                .flow(movieStep())
+                .next(seriesStep())
                 .end()
                 .build();
     }
@@ -109,7 +109,7 @@ public class BatchConfig {
     @Bean
     public Step seriesStep() {
         return stepBuilderFactory.get("series step 1")
-                .<Map<String, String>, SeriesEpisodeInfoEntity>chunk(1)
+                .<Map<String, String>, SeriesEpisodeInfo>chunk(1)
                 .reader(seriesReader())
                 .processor(seriesProcessor())
                 .writer(seriesWriter())
@@ -127,7 +127,7 @@ public class BatchConfig {
     }
 
     @Bean
-    public RepositoryItemWriter<SeriesEpisodeInfoEntity> seriesWriter() {
+    public RepositoryItemWriter<SeriesEpisodeInfo> seriesWriter() {
         RepositoryItemWriter writer = new RepositoryItemWriter() {
             @Override
             public void write(List items) throws Exception {
