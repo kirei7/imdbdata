@@ -1,94 +1,80 @@
-package com.vlad.imdbdata.basis.batch.processor;
+package com.vlad.imdbdata.basis.batch.processor.util;
 
 import com.vlad.imdbdata.basis.entity.CommonMediaInfo;
-import com.vlad.imdbdata.basis.entity.SeriesEpisodeInfo;
-import com.vlad.imdbdata.basis.service.MediaType;
+import com.vlad.imdbdata.basis.entity.EpisodeInfo;
+import com.vlad.imdbdata.basis.entity.SeriesInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 
-/**
- * Created by vlad on 13.03.17.
- */
-public class CustomEntityMapper {
-    private static final Logger LOGGER = LoggerFactory.getLogger(CustomEntityMapper.class);
+public class DataMapper {
+    private static final Logger LOGGER
+            = LoggerFactory.getLogger("Processor DataMapper");
 
-    public CommonMediaInfo mapToCommonEntity(Map<String, String> map) {
-            CommonMediaInfo.EntityBuilder builder
-                    = CommonMediaInfo.entityBuilder();
-            mapToCommonEntity(map, builder);
-            return builder.build();
-    }
-    public SeriesEpisodeInfo mapToSeriesEntity(Map<String, String> map) {
-            SeriesEpisodeInfo.SeriesEntityBuilder builder
-                    = SeriesEpisodeInfo.entityBuilder();
-            mapToEpisodeEntity(map, builder);
-            return builder.build();
-    }
-
-    public CommonMediaInfo.EntityBuilder mapToCommonEntity(Map<String, String> map, CommonMediaInfo.EntityBuilder builder) {
+    public static CommonMediaInfo mapToCommonEntity(Map<String, String> map) {
+        CommonMediaInfo entity = new CommonMediaInfo();
         SimpleDateFormat formatter = new SimpleDateFormat(
                 "dd MMM yyyy",
                 Locale.US
         );
-        Date released = null, dvd = null;
+        Long released = null, dvd = null;
         try {
-            released = formatter.parse(map.get("Released"));
+            released = formatter.parse(map.get("Released")).getTime();
         } catch (ParseException ex) {
             LOGGER.error(ex.getMessage());
         }
         try {
-            dvd = formatter.parse(map.get("DVD"));
+            dvd = formatter.parse(map.get("DVD")).getTime();
         } catch (ParseException ex) {
             LOGGER.error(ex.getMessage());
         }
         String str = map.get("tomatoUserMeter").replace(",", "");
         if (isValidInt(str))
-            builder.withTomatoUserMeter(new Integer(str));
+            entity.setTomatoUserMeter(new Integer(str));
         str = map.get("tomatoUserReviews").replace(",", "");
         if (isValidInt(str))
-            builder.withTomatoUserReviews(new Integer(str));
+            entity.setTomatoUserReviews(new Integer(str));
         str = map.get("tomatoReviews").replace(",", "");
         if (isValidInt(str))
-            builder.withTomatoReviews(new Integer(str));
+            entity.setTomatoReviews(new Integer(str));
         str = map.get("tomatoFresh").replace(",", "");
         if (isValidInt(str))
-            builder.withTomatoFresh(new Integer(str));
+            entity.setTomatoFresh(new Integer(str));
         str = map.get("tomatoRotten").replace(",", "");
         if (isValidInt(str))
-            builder.withTomatoRotten(new Integer(str));
+            entity.setTomatoRotten(new Integer(str));
         str = map.get("tomatoMeter").replace(",", "");
         if (isValidInt(str))
-            builder.withTomatoMeter(new Integer(str));
+            entity.setTomatoMeter(new Integer(str));
         str = map.get("tomatoMeter").replace(",", "");
         if (isValidInt(str))
-            builder.withTomatoMeter(new Integer(str));
+            entity.setTomatoMeter(new Integer(str));
         str = map.get("imdbVotes").replace(",", "");
         if (isValidInt(str))
-            builder.withImdbVotes(new Integer(str));
+            entity.setImdbVotes(new Integer(str));
         str = map.get("Metascore").replace(",", "");
         if (isValidInt(str))
-            builder.withMetaScore(new Integer(str));
+            entity.setMetaScore(new Integer(str));
         str = map.get("imdbRating");
         if (isValidFloat(str))
-            builder.withImdbRating(new Float(str));
+            entity.setImdbRating(new Float(str));
         str = map.get("tomatoUserRating");
         if (isValidFloat(str))
-            builder.withTomatoUserRating(new Float(str));
+            entity.setTomatoUserRating(new Float(str));
         str = map.get("tomatoRating");
         if (isValidFloat(str))
-            builder.withTomatoRating(new Float(str));
+            entity.setTomatoRating(new Float(str));
 
-        return builder
+        return entity
+                .withReleased(released)
+                .withDvd(dvd)
                 .withTitle(map.get("Title"))
                 .withYear(map.get("Year"))
                 .withRated(map.get("Rated"))
-                .withReleased(released)
                 .withRuntime(map.get("Runtime"))
                 .withGenre(map.get("Genre"))
                 .withDirector(map.get("Director"))
@@ -105,38 +91,33 @@ public class CustomEntityMapper {
                 .withTomatoImage(map.get("tomatoImage"))
                 .withTomatoConsensus(map.get("tomatoConsensus"))
                 .withTomatoUrl(map.get("tomatoURL"))
-                .withDvd(dvd)
                 .withBoxOffice(map.get("BoxOffice"))
                 .withProduction(map.get("Production"))
                 .withWebsite(map.get("Website"))
                 .withResponse(map.get("Response"));
     }
 
-    public SeriesEpisodeInfo.SeriesEntityBuilder mapToEpisodeEntity(Map<String, String> map, SeriesEpisodeInfo.SeriesEntityBuilder builder) {
-        if (map.get("Type").toLowerCase().equals("episode")) {
-            String str = map.get("Season");
-            if (isValidInt(str))
-                builder.withSeasonNum(new Integer(str));
-            str = map.get("Episode");
-            if (isValidInt(str))
-                builder.withEpisodeNum(new Integer(str));
-            str = map.get("seriesID");
-            builder.withSeriesId(str);
-        }
-        builder = (SeriesEpisodeInfo.SeriesEntityBuilder) mapToCommonEntity(map, builder);
-        return builder;
+    public static SeriesInfo mapToSeriesEntity(Map<String, String> map) {
+        CommonMediaInfo temp = mapToCommonEntity(map);
+        SeriesInfo entity = new SeriesInfo(temp);
+        String str = map.get("totalSeasons");
+        if (isValidInt(str))
+            entity.setTotalSeasons(Integer.parseInt(str));
+        return entity;
     }
 
-    private CommonMediaInfo.EntityBuilder createBuilder(MediaType type) {
-        switch (type) {
-            case SERIES:
-                return SeriesEpisodeInfo.entityBuilder();
-            case MOVIE:
-            default:
-                return CommonMediaInfo.entityBuilder();
-        }
-
+    public static EpisodeInfo mapToEpisodeEntity(Map<String, String> map) {
+        CommonMediaInfo temp = mapToCommonEntity(map);
+        EpisodeInfo entity = new EpisodeInfo(temp);
+        String str = map.get("Season");
+        if (isValidInt(str))
+            entity.setSeasonNum(Integer.parseInt(str));
+        str = map.get("Episode");
+        if (isValidInt(str))
+            entity.setEpisodeNum(Integer.parseInt(str));
+        return entity.withSeriesId(map.get("seriesID"));
     }
+
 
     //check if a given string is valid to convert to a numeric type
     private static boolean isValidInt(String str) {
@@ -147,7 +128,6 @@ public class CustomEntityMapper {
         }
         return true;
     }
-
     private static boolean isValidFloat(String str) {
         try {
             new Float(str);
@@ -156,4 +136,5 @@ public class CustomEntityMapper {
         }
         return true;
     }
+
 }

@@ -30,7 +30,7 @@ public class CommonInfoStepFactory implements StepFactory{
 
     @Override
     public Step createStep() {
-        return stepBuilderFactory.get("common media info step 1")
+        return stepBuilderFactory.get("commonMediaInfoStep1")
                 .<Map<String, String>, CommonMediaInfo>chunk(1)
                 .reader(reader())
                 .processor(processor())

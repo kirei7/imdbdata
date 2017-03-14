@@ -1,7 +1,6 @@
 package com.vlad.imdbdata.basis.entity;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Entity(name = "MEDIA_INFO_ENTITY")
 public class CommonMediaInfo implements Cloneable{
@@ -17,7 +16,7 @@ public class CommonMediaInfo implements Cloneable{
     @Column(length = 4096)
     protected String plotFull;
 
-    protected Date released;
+    protected Long released;
     @Column(length = 64)
     protected String title;
     @Column(length = 16)
@@ -43,7 +42,7 @@ public class CommonMediaInfo implements Cloneable{
     protected Integer imdbVotes;
 
     //tomatoes info
-    protected Date dvd;
+    protected Long dvd;
     protected String tomatoImage;
     protected String tomatoConsensus;
     protected String boxOffice;
@@ -133,7 +132,7 @@ public class CommonMediaInfo implements Cloneable{
         this.setPlotFull(plotFull);
         return this;
     }
-    public CommonMediaInfo withReleased(Date released) {
+    public CommonMediaInfo withReleased(Long released) {
         this.setReleased(released);
         return this;
     }
@@ -205,7 +204,7 @@ public class CommonMediaInfo implements Cloneable{
         this.setImdbVotes(imdbVotes);
         return this;
     }
-    public CommonMediaInfo withDvd(Date dvd) {
+    public CommonMediaInfo withDvd(Long dvd) {
         this.setDvd(dvd);
         return this;
     }
@@ -280,7 +279,7 @@ public class CommonMediaInfo implements Cloneable{
         this.plotFull = plotFull;
     }
 
-    public void setReleased(Date released) {
+    public void setReleased(Long released) {
         this.released = released;
     }
 
@@ -352,7 +351,7 @@ public class CommonMediaInfo implements Cloneable{
         this.imdbVotes = imdbVotes;
     }
 
-    public void setDvd(Date dvd) {
+    public void setDvd(Long dvd) {
         this.dvd = dvd;
     }
 
@@ -424,7 +423,7 @@ public class CommonMediaInfo implements Cloneable{
         return plotFull;
     }
 
-    public Date getReleased() {
+    public Long getReleased() {
         return released;
     }
 
@@ -496,7 +495,7 @@ public class CommonMediaInfo implements Cloneable{
         return imdbVotes;
     }
 
-    public Date getDvd() {
+    public Long getDvd() {
         return dvd;
     }
 

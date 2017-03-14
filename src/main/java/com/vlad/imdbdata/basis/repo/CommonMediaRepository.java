@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface MediaInfoRepository extends JpaRepository<CommonMediaInfo, String> {
+public interface CommonMediaRepository extends JpaRepository<CommonMediaInfo, String> {
     CommonMediaInfo findByImdbId(String imdbId);
     List<CommonMediaInfo> findByType(String type);
 }

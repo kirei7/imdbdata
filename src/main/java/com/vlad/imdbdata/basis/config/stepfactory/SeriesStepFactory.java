@@ -3,6 +3,7 @@ package com.vlad.imdbdata.basis.config.stepfactory;
 import com.vlad.imdbdata.basis.batch.CustomReaderFactory;
 import com.vlad.imdbdata.basis.batch.processor.CommonMediaInfoProcessor;
 import com.vlad.imdbdata.basis.batch.processor.SeriesProcessor;
+import com.vlad.imdbdata.basis.batch.processor.ValueContainer;
 import com.vlad.imdbdata.basis.entity.CommonMediaInfo;
 import com.vlad.imdbdata.basis.entity.SeriesInfo;
 import com.vlad.imdbdata.basis.repo.SeriesRepository;
@@ -29,10 +30,12 @@ public class SeriesStepFactory implements StepFactory {
     private CustomReaderFactory customReaderFactory;
     @Autowired
     private SeriesRepository repository;
+    @Autowired
+    private ValueContainer container;
 
     @Override
     public Step createStep() {
-        return stepBuilderFactory.get("series info info step 1")
+        return stepBuilderFactory.get("seriesInfoStep1")
                 .<Map<String, String>, CommonMediaInfo>chunk(1)
                 .reader(reader())
                 .processor(processor())
@@ -44,7 +47,7 @@ public class SeriesStepFactory implements StepFactory {
     }
 
     private ItemProcessor processor() {
-        return new SeriesProcessor();
+        return new SeriesProcessor(container);
     }
 
     private RepositoryItemWriter<SeriesInfo> writer() {

@@ -1,6 +1,6 @@
 package com.vlad.imdbdata.basis.service;
 
-import com.vlad.imdbdata.basis.repo.MediaInfoRepository;
+import com.vlad.imdbdata.basis.repo.CommonMediaRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
@@ -12,10 +12,7 @@ import org.springframework.batch.core.repository.JobExecutionAlreadyRunningExcep
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,7 +32,7 @@ public class MediaInfoService {
     private Map<MediaType, Job> jobs;
 
     @Autowired
-    private MediaInfoRepository repository;
+    private CommonMediaRepository repository;
 
     public void importMedia(String title, Integer year, MediaType type) {
         Job job = jobs.get(type);

@@ -1,6 +1,7 @@
 package com.vlad.imdbdata.basis.config.stepfactory;
 
 import com.vlad.imdbdata.basis.batch.CustomReaderFactory;
+import com.vlad.imdbdata.basis.batch.processor.EpisodeProcessor;
 import com.vlad.imdbdata.basis.entity.EpisodeInfo;
 import com.vlad.imdbdata.basis.repo.EpisodeRepository;
 import com.vlad.imdbdata.basis.service.MediaType;
@@ -12,10 +13,12 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.data.RepositoryItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
 
+@Component
 public class EpisodeStepFactory implements StepFactory {
 
     @Autowired
@@ -27,7 +30,7 @@ public class EpisodeStepFactory implements StepFactory {
 
     @Override
     public Step createStep() {
-        return stepBuilderFactory.get("series info info step 1")
+        return stepBuilderFactory.get("episodeInfoStep1")
                 .<Map<String, String>, EpisodeInfo>chunk(1)
                 .reader(reader())
                 .processor(processor())
@@ -39,9 +42,7 @@ public class EpisodeStepFactory implements StepFactory {
         return customReaderFactory.create(MediaType.EPISODE);
     }
 
-    public ItemProcessor processor() {
-        return new EpisodeProcessor();
-    }
+    public ItemProcessor processor() {return new EpisodeProcessor();}
 
     public RepositoryItemWriter<EpisodeInfo> writer() {
         RepositoryItemWriter writer = new RepositoryItemWriter() {
