@@ -60,13 +60,7 @@ public class CommonMediaInfo implements Cloneable{
     protected Integer tomatoRotten;
     protected Integer tomatoUserMeter;
     protected Integer tomatoUserReviews;
-
-    @Override
-    public String toString() {
-        return "[" + this.getClass().getSimpleName() + "{" +
-                "imdbId='" + imdbId + "\'}";
-    }
-
+    
     @Override
     public boolean equals(Object o) {
         if (this == o)
@@ -78,179 +72,16 @@ public class CommonMediaInfo implements Cloneable{
 
         return imdbId.equals(that.imdbId);
     }
-
     @Override
     public int hashCode() {
         return imdbId.hashCode();
     }
-
     @Override
     public Object clone() {
         return null;
     }
 
-    public static EntityBuilder entityBuilder() {
-        return new EntityBuilder();
-    }
-    public static class EntityBuilder {
-        protected CommonMediaInfo obj;
-
-        EntityBuilder() {
-            obj = new CommonMediaInfo();
-        }
-
-        public CommonMediaInfo build() {
-            return obj;
-        }
-
-        public EntityBuilder withImdbId(String imdbId) {
-            obj.setImdbId(imdbId);
-            return this;
-        }
-        public EntityBuilder withPlotShort(String plotShort) {
-            obj.setPlotShort(plotShort);
-            return this;
-        }
-        public EntityBuilder withPlotFull(String plotFull) {
-            obj.setPlotFull(plotFull);
-            return this;
-        }
-        public EntityBuilder withReleased(Date released) {
-            obj.setReleased(released);
-            return this;
-        }
-        public EntityBuilder withTitle(String title) {
-            obj.setTitle(title);
-            return this;
-        }
-        public EntityBuilder withYear(String year) {
-            obj.setYear(year);
-            return this;
-        }
-        public EntityBuilder withRated(String rated) {
-            obj.setRated(rated);
-            return this;
-        }
-        public EntityBuilder withRuntime(String runtime) {
-            obj.setRuntime(runtime);
-            return this;
-        }
-        public EntityBuilder withDirector(String director) {
-            obj.setDirector(director);
-            return this;
-        }
-        public EntityBuilder withAwards(String awards) {
-            obj.setAwards(awards);
-            return this;
-        }
-        public EntityBuilder withPosterUrl(String posterUrl) {
-            obj.setPosterUrl(posterUrl);
-            return this;
-        }
-        public EntityBuilder withType(String type) {
-            obj.setType(type);
-            return this;
-        }
-        public EntityBuilder withResponse(String responce) {
-            obj.setResponse(responce);
-            return this;
-        }
-        public EntityBuilder withGenre(String genre) {
-            obj.setGenre(genre);
-            return this;
-        }
-        public EntityBuilder withWriter(String writer) {
-            obj.setWriter(writer);
-            return this;
-        }
-        public EntityBuilder withActors(String actors) {
-            obj.setActors(actors);
-            return this;
-        }
-        public EntityBuilder withLanguage(String language) {
-            obj.setLanguage(language);
-            return this;
-        }
-        public EntityBuilder withCountry(String country) {
-            obj.setCountry(country);
-            return this;
-        }
-        public EntityBuilder withImdbRating(Float imdbRating) {
-            obj.setImdbRating(imdbRating);
-            return this;
-        }
-        public EntityBuilder withMetaScore(Integer metaScore) {
-            obj.setMetaScore(metaScore);
-            return this;
-        }
-        public EntityBuilder withImdbVotes(Integer imdbVotes) {
-            obj.setImdbVotes(imdbVotes);
-            return this;
-        }
-        public EntityBuilder withDvd(Date dvd) {
-            obj.setDvd(dvd);
-            return this;
-        }
-        public EntityBuilder withTomatoImage(String tomatoImage) {
-            obj.setTomatoImage(tomatoImage);
-            return this;
-        }
-        public EntityBuilder withTomatoConsensus(String tomatoConsensus) {
-            obj.setTomatoConsensus(tomatoConsensus);
-            return this;
-        }
-        public EntityBuilder withBoxOffice(String boxOffice) {
-            obj.setBoxOffice(boxOffice);
-            return this;
-        }
-        public EntityBuilder withProduction(String production) {
-            obj.setProduction(production);
-            return this;
-        }
-        public EntityBuilder withTomatoUrl(String tomatoUrl) {
-            obj.setTomatoUrl(tomatoUrl);
-            return this;
-        }
-        public EntityBuilder withWebsite(String website) {
-            obj.setWebsite(website);
-            return this;
-        }
-        public EntityBuilder withTomatoRating(Float tomatoRating) {
-            obj.setTomatoRating(tomatoRating);
-            return this;
-        }
-        public EntityBuilder withTomatoUserRating(Float tomatoUserRating) {
-            obj.setTomatoUserRating(tomatoUserRating);
-            return this;
-        }
-        public EntityBuilder withTomatoMeter(Integer tomatoMeter) {
-            obj.setTomatoMeter(tomatoMeter);
-            return this;
-        }
-        public EntityBuilder withTomatoReviews(Integer tomatoReviews) {
-            obj.setTomatoReviews(tomatoReviews);
-            return this;
-        }
-        public EntityBuilder withTomatoFresh(Integer tomatoFresh) {
-            obj.setTomatoFresh(tomatoFresh);
-            return this;
-        }
-        public EntityBuilder withTomatoRotten(Integer tomatoRotten) {
-            obj.setTomatoRotten(tomatoRotten);
-            return this;
-        }
-        public EntityBuilder withTomatoUserMeter(Integer tomatoUserMeter) {
-            obj.setTomatoUserMeter(tomatoUserMeter);
-            return this;
-        }
-        public EntityBuilder withTomatoUserReviews(Integer tomatoUserReviews) {
-            obj.setTomatoUserReviews(tomatoUserReviews);
-            return this;
-        }
-    }
-
     //copy constructor
-
     public CommonMediaInfo(CommonMediaInfo other) {
         this.imdbId = other.imdbId;
         this.plotShort = other.plotShort;
@@ -288,6 +119,151 @@ public class CommonMediaInfo implements Cloneable{
         this.tomatoRotten = other.tomatoRotten;
         this.tomatoUserMeter = other.tomatoUserMeter;
         this.tomatoUserReviews = other.tomatoUserReviews;
+    }
+
+    public CommonMediaInfo withImdbId(String imdbId) {
+        this.setImdbId(imdbId);
+        return this;
+    }
+    public CommonMediaInfo withPlotShort(String plotShort) {
+        this.setPlotShort(plotShort);
+        return this;
+    }
+    public CommonMediaInfo withPlotFull(String plotFull) {
+        this.setPlotFull(plotFull);
+        return this;
+    }
+    public CommonMediaInfo withReleased(Date released) {
+        this.setReleased(released);
+        return this;
+    }
+    public CommonMediaInfo withTitle(String title) {
+        this.setTitle(title);
+        return this;
+    }
+    public CommonMediaInfo withYear(String year) {
+        this.setYear(year);
+        return this;
+    }
+    public CommonMediaInfo withRated(String rated) {
+        this.setRated(rated);
+        return this;
+    }
+    public CommonMediaInfo withRuntime(String runtime) {
+        this.setRuntime(runtime);
+        return this;
+    }
+    public CommonMediaInfo withDirector(String director) {
+        this.setDirector(director);
+        return this;
+    }
+    public CommonMediaInfo withAwards(String awards) {
+        this.setAwards(awards);
+        return this;
+    }
+    public CommonMediaInfo withPosterUrl(String posterUrl) {
+        this.setPosterUrl(posterUrl);
+        return this;
+    }
+    public CommonMediaInfo withType(String type) {
+        this.setType(type);
+        return this;
+    }
+    public CommonMediaInfo withResponse(String responce) {
+        this.setResponse(responce);
+        return this;
+    }
+    public CommonMediaInfo withGenre(String genre) {
+        this.setGenre(genre);
+        return this;
+    }
+    public CommonMediaInfo withWriter(String writer) {
+        this.setWriter(writer);
+        return this;
+    }
+    public CommonMediaInfo withActors(String actors) {
+        this.setActors(actors);
+        return this;
+    }
+    public CommonMediaInfo withLanguage(String language) {
+        this.setLanguage(language);
+        return this;
+    }
+    public CommonMediaInfo withCountry(String country) {
+        this.setCountry(country);
+        return this;
+    }
+    public CommonMediaInfo withImdbRating(Float imdbRating) {
+        this.setImdbRating(imdbRating);
+        return this;
+    }
+    public CommonMediaInfo withMetaScore(Integer metaScore) {
+        this.setMetaScore(metaScore);
+        return this;
+    }
+    public CommonMediaInfo withImdbVotes(Integer imdbVotes) {
+        this.setImdbVotes(imdbVotes);
+        return this;
+    }
+    public CommonMediaInfo withDvd(Date dvd) {
+        this.setDvd(dvd);
+        return this;
+    }
+    public CommonMediaInfo withTomatoImage(String tomatoImage) {
+        this.setTomatoImage(tomatoImage);
+        return this;
+    }
+    public CommonMediaInfo withTomatoConsensus(String tomatoConsensus) {
+        this.setTomatoConsensus(tomatoConsensus);
+        return this;
+    }
+    public CommonMediaInfo withBoxOffice(String boxOffice) {
+        this.setBoxOffice(boxOffice);
+        return this;
+    }
+    public CommonMediaInfo withProduction(String production) {
+        this.setProduction(production);
+        return this;
+    }
+    public CommonMediaInfo withTomatoUrl(String tomatoUrl) {
+        this.setTomatoUrl(tomatoUrl);
+        return this;
+    }
+    public CommonMediaInfo withWebsite(String website) {
+        this.setWebsite(website);
+        return this;
+    }
+    public CommonMediaInfo withTomatoRating(Float tomatoRating) {
+        this.setTomatoRating(tomatoRating);
+        return this;
+    }
+    public CommonMediaInfo withTomatoUserRating(Float tomatoUserRating) {
+        this.setTomatoUserRating(tomatoUserRating);
+        return this;
+    }
+    public CommonMediaInfo withTomatoMeter(Integer tomatoMeter) {
+        this.setTomatoMeter(tomatoMeter);
+        return this;
+    }
+    public CommonMediaInfo withTomatoReviews(Integer tomatoReviews) {
+        this.setTomatoReviews(tomatoReviews);
+        return this;
+    }
+    public CommonMediaInfo withTomatoFresh(Integer tomatoFresh) {
+        this.setTomatoFresh(tomatoFresh);
+        return this;
+    }
+    public CommonMediaInfo withTomatoRotten(Integer tomatoRotten) {
+        this.setTomatoRotten(tomatoRotten);
+        return this;
+    }
+    public CommonMediaInfo withTomatoUserMeter(Integer tomatoUserMeter) {
+        this.setTomatoUserMeter(tomatoUserMeter);
+        return this;
+    }
+    public CommonMediaInfo withTomatoUserReviews(Integer tomatoUserReviews) {
+        this.setTomatoUserReviews(tomatoUserReviews);
+        return this;
     }
 
     //the whole bunch of accessors here!
