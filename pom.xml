@@ -96,6 +96,13 @@
   <profiles>
     <profile>
       <id>test</id>
+      <properties>
+        <spring.datasource.url></spring.datasource.url>
+        <spring.datasource.username></spring.datasource.username>
+        <spring.datasource.password></spring.datasource.password>
+        <spring.datasource.driver-class-name></spring.datasource.driver-class-name>
+        <spring.jpa.hibernate.ddl-auto>create</spring.jpa.hibernate.ddl-auto>
+      </properties>
       <dependencies>
         <dependency>
           <groupId>org.hsqldb</groupId>
@@ -114,11 +121,17 @@
     </profile>
     <profile>
       <id>prod</id>
+      <properties>
+        <spring.datasource.url>jdbc:mysql://localhost:3306/imdb</spring.datasource.url>
+        <spring.datasource.username>dummy</spring.datasource.username>
+        <spring.datasource.password>password</spring.datasource.password>
+        <spring.datasource.driver-class-name>com.mysql.jdbc.Driver</spring.datasource.driver-class-name>
+        <spring.jpa.hibernate.ddl-auto>create</spring.jpa.hibernate.ddl-auto>
+      </properties>
       <dependencies>
         <dependency>
           <groupId>mysql</groupId>
           <artifactId>mysql-connector-java</artifactId>
-          <version>6.0.5</version>
         </dependency>
       </dependencies>
     </profile>
