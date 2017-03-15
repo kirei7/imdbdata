@@ -1,6 +1,7 @@
 package com.vlad.imdbdata.basis.config.stepfactory;
 
 import com.vlad.imdbdata.basis.batch.CustomReaderFactory;
+import com.vlad.imdbdata.basis.batch.ValueContainer;
 import com.vlad.imdbdata.basis.batch.processor.CommonMediaInfoProcessor;
 import com.vlad.imdbdata.basis.entity.CommonMediaInfo;
 import com.vlad.imdbdata.basis.repo.CommonMediaRepository;
@@ -27,6 +28,8 @@ public class CommonInfoStepFactory implements StepFactory{
     private CustomReaderFactory customReaderFactory;
     @Autowired
     private CommonMediaRepository repository;
+    @Autowired
+    private ValueContainer container;
 
     @Override
     public Step createStep() {
@@ -43,7 +46,7 @@ public class CommonInfoStepFactory implements StepFactory{
     }
 
     private ItemProcessor processor() {
-        return new CommonMediaInfoProcessor();
+        return new CommonMediaInfoProcessor(container);
     }
 
     private RepositoryItemWriter<CommonMediaInfo> writer() {

@@ -1,6 +1,6 @@
 package com.vlad.imdbdata.basis.batch.reader;
 
-import com.vlad.imdbdata.basis.batch.processor.ValueContainer;
+import com.vlad.imdbdata.basis.batch.ValueContainer;
 import com.vlad.imdbdata.basis.batch.reader.util.DataFetcher;
 import com.vlad.imdbdata.basis.batch.reader.util.DataMapper;
 import org.slf4j.Logger;

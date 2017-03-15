@@ -1,5 +1,6 @@
 package com.vlad.imdbdata.basis.service;
 
+import com.vlad.imdbdata.basis.batch.ValueContainer;
 import com.vlad.imdbdata.basis.config.MediaType;
 import com.vlad.imdbdata.basis.repo.CommonMediaRepository;
 import org.slf4j.Logger;
@@ -28,14 +29,14 @@ public class MediaInfoService {
 
     @Autowired
     private JobLauncher jobLauncher;
-
     @Autowired
     private Map<MediaType, Job> jobs;
-
     @Autowired
     private CommonMediaRepository repository;
+    @Autowired
+    private ValueContainer container;
 
-    public void importMedia(String title, Integer year, MediaType type) {
+    public String importMedia(String title, Integer year, MediaType type) {
         Job job = jobs.get(type);
         try {
             jobLauncher.run(
@@ -49,7 +50,16 @@ public class MediaInfoService {
             LOGGER.error(ex.getMessage());
             ex.printStackTrace();
         }
-
+        String resultType = container.getMediaType();
+        String resultTitle = container.getMediaTitle();
+        String result;
+        if (resultType == null || resultTitle == null)
+            result = "An error occured, see log for more details";
+        else
+            result= resultType + " " + resultTitle + " was successfully imported";
+        container.setMediaTitle(null);
+        container.setMediaType(null);
+        return result;
     }
 
     public long itemsCount() {

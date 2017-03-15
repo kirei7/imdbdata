@@ -2,7 +2,7 @@ package com.vlad.imdbdata.basis.config.stepfactory;
 
 import com.vlad.imdbdata.basis.batch.CustomReaderFactory;
 import com.vlad.imdbdata.basis.batch.processor.SeriesProcessor;
-import com.vlad.imdbdata.basis.batch.processor.ValueContainer;
+import com.vlad.imdbdata.basis.batch.ValueContainer;
 import com.vlad.imdbdata.basis.entity.CommonMediaInfo;
 import com.vlad.imdbdata.basis.entity.SeriesInfo;
 import com.vlad.imdbdata.basis.repo.SeriesRepository;

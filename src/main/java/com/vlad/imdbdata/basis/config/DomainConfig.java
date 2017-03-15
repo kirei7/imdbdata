@@ -1,5 +1,6 @@
 package com.vlad.imdbdata.basis.config;
 
+import com.vlad.imdbdata.basis.batch.ValueContainer;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -18,5 +19,10 @@ public class DomainConfig {
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();
+    }
+
+    @Bean
+    public ValueContainer valueContainer() {
+        return new ValueContainer();
     }
 }

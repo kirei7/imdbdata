@@ -1,12 +1,10 @@
 package com.vlad.imdbdata.basis.batch.processor;
 
+import com.vlad.imdbdata.basis.batch.ValueContainer;
 import com.vlad.imdbdata.basis.batch.processor.util.DataMapper;
 import com.vlad.imdbdata.basis.entity.SeriesInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.batch.core.JobParameter;
-import org.springframework.batch.core.StepExecution;
-import org.springframework.batch.core.annotation.AfterStep;
 import org.springframework.batch.item.ItemProcessor;
 
 import java.util.Map;
@@ -30,6 +28,8 @@ public class SeriesProcessor implements ItemProcessor<Map<String, String>, Serie
         if (entity.getType().toLowerCase().equals("series")) {
             totalSeasons = new Long(entity.getTotalSeasons());
             container.setTotalSeasons(totalSeasons);
+            container.setMediaTitle(entity.getTitle());
+            container.setMediaType("Series");
         }
         return entity;
     }

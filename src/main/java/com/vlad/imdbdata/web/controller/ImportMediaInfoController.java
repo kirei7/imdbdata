@@ -1,5 +1,6 @@
 package com.vlad.imdbdata.web.controller;
 
+import com.vlad.imdbdata.basis.batch.ValueContainer;
 import com.vlad.imdbdata.basis.entity.CommonMediaInfo;
 import com.vlad.imdbdata.basis.entity.EpisodeInfo;
 import com.vlad.imdbdata.basis.repo.CommonMediaRepository;
@@ -25,13 +26,14 @@ public class ImportMediaInfoController {
     private MediaInfoService service;
 
     @RequestMapping(method = RequestMethod.GET)
-    public void importData(
+    public String importData(
             @RequestParam(name = "title") String title,
             @RequestParam(name = "mediaType") MediaType mediaType,
             @RequestParam(name = "year", required = false) Integer year
     ) {
-        service.importMedia(title, year, mediaType);
+        String response = service.importMedia(title, year, mediaType);
         LOGGER.info("Entities count after import: " + service.itemsCount());
+        return response;
     }
 
     @RequestMapping("/series")

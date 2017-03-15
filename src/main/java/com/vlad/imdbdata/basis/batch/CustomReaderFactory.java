@@ -1,6 +1,5 @@
 package com.vlad.imdbdata.basis.batch;
 
-import com.vlad.imdbdata.basis.batch.processor.ValueContainer;
 import com.vlad.imdbdata.basis.batch.reader.CommonMediaInfoReader;
 import com.vlad.imdbdata.basis.batch.reader.EpisodeReader;
 import com.vlad.imdbdata.basis.batch.reader.util.DataFetcher;
