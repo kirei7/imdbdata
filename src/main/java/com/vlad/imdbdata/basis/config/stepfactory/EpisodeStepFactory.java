@@ -4,7 +4,7 @@ import com.vlad.imdbdata.basis.batch.CustomReaderFactory;
 import com.vlad.imdbdata.basis.batch.processor.EpisodeProcessor;
 import com.vlad.imdbdata.basis.entity.EpisodeInfo;
 import com.vlad.imdbdata.basis.repo.EpisodeRepository;
-import com.vlad.imdbdata.basis.service.MediaType;
+import com.vlad.imdbdata.basis.config.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Step;

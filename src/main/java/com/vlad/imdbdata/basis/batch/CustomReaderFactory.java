@@ -4,7 +4,7 @@ import com.vlad.imdbdata.basis.batch.processor.ValueContainer;
 import com.vlad.imdbdata.basis.batch.reader.CommonMediaInfoReader;
 import com.vlad.imdbdata.basis.batch.reader.EpisodeReader;
 import com.vlad.imdbdata.basis.batch.reader.util.DataFetcher;
-import com.vlad.imdbdata.basis.service.MediaType;
+import com.vlad.imdbdata.basis.config.MediaType;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;

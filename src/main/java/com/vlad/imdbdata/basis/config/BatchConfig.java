@@ -4,7 +4,6 @@ import com.vlad.imdbdata.basis.config.stepfactory.CommonInfoStepFactory;
 import com.vlad.imdbdata.basis.config.stepfactory.EpisodeStepFactory;
 import com.vlad.imdbdata.basis.config.stepfactory.SeriesStepFactory;
 import com.vlad.imdbdata.basis.repo.EpisodeRepository;
-import com.vlad.imdbdata.basis.service.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;

@@ -5,7 +5,7 @@ import com.vlad.imdbdata.basis.entity.EpisodeInfo;
 import com.vlad.imdbdata.basis.repo.CommonMediaRepository;
 import com.vlad.imdbdata.basis.repo.EpisodeRepository;
 import com.vlad.imdbdata.basis.service.MediaInfoService;
-import com.vlad.imdbdata.basis.service.MediaType;
+import com.vlad.imdbdata.basis.config.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

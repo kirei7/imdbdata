@@ -1,6 +1,6 @@
 package com.vlad.imdbdata.web.util;
 
-import com.vlad.imdbdata.basis.service.MediaType;
+import com.vlad.imdbdata.basis.config.MediaType;
 import org.springframework.core.convert.converter.Converter;
 
 public class MediaTypeEnumConverter implements Converter<String, MediaType> {

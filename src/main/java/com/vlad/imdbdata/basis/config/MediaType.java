@@ -1,4 +1,4 @@
-package com.vlad.imdbdata.basis.service;
+package com.vlad.imdbdata.basis.config;
 
 public enum MediaType {
     MOVIE,

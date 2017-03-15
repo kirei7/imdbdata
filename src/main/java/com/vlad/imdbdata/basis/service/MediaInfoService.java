@@ -1,5 +1,6 @@
 package com.vlad.imdbdata.basis.service;
 
+import com.vlad.imdbdata.basis.config.MediaType;
 import com.vlad.imdbdata.basis.repo.CommonMediaRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

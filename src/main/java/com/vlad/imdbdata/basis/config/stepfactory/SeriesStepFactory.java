@@ -1,13 +1,12 @@
 package com.vlad.imdbdata.basis.config.stepfactory;
 
 import com.vlad.imdbdata.basis.batch.CustomReaderFactory;
-import com.vlad.imdbdata.basis.batch.processor.CommonMediaInfoProcessor;
 import com.vlad.imdbdata.basis.batch.processor.SeriesProcessor;
 import com.vlad.imdbdata.basis.batch.processor.ValueContainer;
 import com.vlad.imdbdata.basis.entity.CommonMediaInfo;
 import com.vlad.imdbdata.basis.entity.SeriesInfo;
 import com.vlad.imdbdata.basis.repo.SeriesRepository;
-import com.vlad.imdbdata.basis.service.MediaType;
+import com.vlad.imdbdata.basis.config.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Step;
