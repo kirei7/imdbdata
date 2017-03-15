@@ -8,11 +8,11 @@ import org.springframework.format.support.FormattingConversionService;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 @Configuration
-@EnableWebMvc
 @ComponentScan("com.vlad.imdbdata.web.controller")
 public class WebConfig extends WebMvcConfigurationSupport {
 
@@ -21,6 +21,12 @@ public class WebConfig extends WebMvcConfigurationSupport {
         FormattingConversionService f = super.mvcConversionService();
         f.addConverter(new MediaTypeEnumConverter());
         return f;
+    }
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/static/**")
+                .addResourceLocations("classpath:/static/");
     }
 
 }
