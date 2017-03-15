@@ -51,7 +51,7 @@ public class CommonInfoStepFactory implements StepFactory{
             private final Logger LOGGER = LoggerFactory.getLogger(RepositoryItemWriter.class);
             @Override
             public void write(List items) throws Exception {
-                LOGGER.info("Write entity do common repo");
+                LOGGER.info("Write entity to common repo");
                 super.write(items);
             }
         };

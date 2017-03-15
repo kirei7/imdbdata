@@ -50,7 +50,7 @@ public class EpisodeStepFactory implements StepFactory {
                     = LoggerFactory.getLogger("Episode repository writer");
             @Override
             public void write(List items) throws Exception {
-                logger.info("Write entity do episodes repo");
+                logger.info("Write entity to episodes repo");
                 super.write(items);
             }
         };
