@@ -1,6 +1,5 @@
 package com.vlad.imdbdata.web.controller;
 
-import com.vlad.imdbdata.basis.batch.ValueContainer;
 import com.vlad.imdbdata.basis.entity.CommonMediaInfo;
 import com.vlad.imdbdata.basis.entity.EpisodeInfo;
 import com.vlad.imdbdata.basis.repo.CommonMediaRepository;
@@ -24,6 +23,10 @@ public class ImportMediaInfoController {
 
     @Autowired
     private MediaInfoService service;
+    @Autowired
+    private EpisodeRepository episodeRepository;
+    @Autowired
+    private CommonMediaRepository commonMediaRepository;
 
     @RequestMapping(method = RequestMethod.GET)
     public String importData(
@@ -40,15 +43,11 @@ public class ImportMediaInfoController {
     public List<EpisodeInfo> getSeriesEpisodesById(
             //@RequestParam(name = "seriesId") String seriesID
     ) {
-        return seriesRepository.findAll();
+        return episodeRepository.findAll();
     }
     @RequestMapping("/all")
     public List<CommonMediaInfo> getAll() {
-        return mediaInfoRepository.findAll();
+        return commonMediaRepository.findAll();
     }
 
-    @Autowired
-    private EpisodeRepository seriesRepository;
-    @Autowired
-    private CommonMediaRepository mediaInfoRepository;
 }
