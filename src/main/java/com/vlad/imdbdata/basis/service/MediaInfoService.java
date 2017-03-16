@@ -48,13 +48,12 @@ public class MediaInfoService {
                 | JobParametersInvalidException
                 | JobRestartException ex) {
             LOGGER.error(ex.getMessage());
-            ex.printStackTrace();
         }
         String resultType = container.getMediaType();
         String resultTitle = container.getMediaTitle();
         String result;
         if (resultType == null || resultTitle == null)
-            result = "An error occured, see log for more details";
+            result = "An error occurred, see log for more details";
         else
             result= resultType + " " + resultTitle + " was successfully imported";
         container.setMediaTitle(null);
@@ -66,7 +65,7 @@ public class MediaInfoService {
         return repository.count();
     }
 
-    protected Map<String, JobParameter> makeParameters(String title, Integer year, MediaType type) {
+    Map<String, JobParameter> makeParameters(String title, Integer year, MediaType type) {
         Map<String, JobParameter> map = new HashMap<String, JobParameter>() {
             {
                 put("title", new JobParameter(title));
