@@ -31,6 +31,9 @@ HOW TO USE
 NOTE
 If You want to launch an application with in-memory database, You should only run following
 commands in project root folder (the one with pom.xml file):
+
 $ mvn clean
+
 $ mvn package -P test
+
 These commands will package ready-to-run application which can be launched WITHOUT MySQL.
