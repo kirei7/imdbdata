@@ -1,5 +1,11 @@
 # imdbdata
 
+REQUIREMENTS
+1. OS Linux
+2. MySQL server 5.7.17
+3. Maven
+4. Java 8
+
 INSTALLATION
 1. Clone repository to your local machine
 2. Run 'install.sh' script
