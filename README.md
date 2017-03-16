@@ -2,7 +2,7 @@
 
 REQUIREMENTS
 1. OS Linux
-2. MySQL server 5.7.17
+2. MySQL server 5.7.17 (optional)
 3. Maven
 4. Java 8
 
@@ -27,3 +27,10 @@ HOW TO USE
 5. On successful completion of a batch job You will be notified
 6. On unsuccessful completion You also will be notified
 7. To properly end application go to localhost:8080/system/shutdown. 
+
+NOTE
+If You want to launch an application with in-memory database, You should only run following
+commands in project root folder (the one with pom.xml file):
+$ mvn clean
+$ mvn package -P test
+These commands will package ready-to-run application which can be launched WITHOUT MySQL.
