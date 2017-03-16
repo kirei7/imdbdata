@@ -9,6 +9,11 @@ REQUIREMENTS
 INSTALLATION
 1. Clone repository to your local machine
 2. Run 'install.sh' script
+3. At some point, You will be asked to enter the password of MySQL user,
+that is needed to create database and user for current project.
+Database created: imdb
+User created: 'dummy'@'localhost'
+User password: password'
 
 LAUNCHING
 1. If You successfully passed INSTALLATION step, then run 'run.sh' script.
