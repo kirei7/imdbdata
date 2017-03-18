@@ -32,8 +32,6 @@ public class MediaInfoService {
     @Autowired
     private Map<MediaType, Job> jobs;
     @Autowired
-    private CommonMediaRepository repository;
-    @Autowired
     private ValueContainer container;
 
     public String importMedia(String title, Integer year, MediaType type) {
