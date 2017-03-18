@@ -35,7 +35,6 @@ public class ImportMediaInfoController {
             @RequestParam(name = "year", required = false) Integer year
     ) {
         String response = service.importMedia(title, year, mediaType);
-        LOGGER.info("Entities count after import: " + service.itemsCount());
         return response;
     }
 
