@@ -41,7 +41,6 @@ public class ImportMediaInfoController {
 
     @RequestMapping("/series")
     public List<EpisodeInfo> getSeriesEpisodesById(
-            //@RequestParam(name = "seriesId") String seriesID
     ) {
         return episodeRepository.findAll();
     }

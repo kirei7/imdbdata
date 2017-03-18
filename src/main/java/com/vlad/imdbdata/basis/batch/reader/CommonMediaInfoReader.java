@@ -11,7 +11,6 @@ import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.NonTransientResourceException;
 import org.springframework.batch.item.ParseException;
 import org.springframework.batch.item.UnexpectedInputException;
-import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
@@ -22,7 +21,9 @@ public class CommonMediaInfoReader implements ItemReader<Map<String, String>> {
     private DataFetcher dataFetcher;
     private final String apiUrl;
     private Map<String, String> data;
-    private boolean isReaded;
+    /*for a common media entity we need to read information
+    * only once, so this flag points if information is already read*/
+    private boolean isRead;
 
 
     public CommonMediaInfoReader(DataFetcher dataFetcher, String apiUrl) {
@@ -33,7 +34,7 @@ public class CommonMediaInfoReader implements ItemReader<Map<String, String>> {
     //here all connections and data fetching occurs
     @BeforeStep
     public void beforeStep(final StepExecution stepExecution) {
-        isReaded = false;
+        isRead = false; //we're beginning to download unread info, so 'false'
         Map<String, JobParameter> parameters = stepExecution
                 .getJobExecution()
                 .getJobParameters()
@@ -45,10 +46,10 @@ public class CommonMediaInfoReader implements ItemReader<Map<String, String>> {
     @Override
     public Map<String, String> read()
             throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
-        if (isReaded) {
+        if (isRead) {
             return null;
         }
-        isReaded = true;
+        isRead = true;
         LOGGER.info("read() returns: " + data.toString());
         return data;
     }

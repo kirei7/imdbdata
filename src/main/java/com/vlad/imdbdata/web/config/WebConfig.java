@@ -16,6 +16,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 @ComponentScan("com.vlad.imdbdata.web.controller")
 public class WebConfig extends WebMvcConfigurationSupport {
 
+    //need to convert @RequestParam String in controller to MediaType enum
     @Override
     public FormattingConversionService mvcConversionService() {
         FormattingConversionService f = super.mvcConversionService();

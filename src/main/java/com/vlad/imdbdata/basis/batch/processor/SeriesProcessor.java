@@ -33,17 +33,4 @@ public class SeriesProcessor implements ItemProcessor<Map<String, String>, Serie
         }
         return entity;
     }
-
-    //putting totalSeasons (seasons number) to job parameters
-    //so that episode reader could know how many seasons fetch
-    /*@AfterStep
-    public void afterProcess(StepExecution stepExecution) {
-        if (totalSeasons == null) return;
-        Map<String, JobParameter> parameters = stepExecution
-                .getJobExecution()
-                .getJobParameters()
-                .getParameters();
-        LOGGER.debug("Putting series totalSeasons to parameters: " + totalSeasons.toString());
-        parameters.put("totalSeasons", new JobParameter(totalSeasons));
-    }*/
 }

@@ -2,6 +2,11 @@ package com.vlad.imdbdata.basis.entity;
 
 import javax.persistence.*;
 
+/*
+* Common info is rather a movie info, but since there are subclasses,
+* it's better to call it CommonMediaInfo (I think series don't have
+* that 'IS A' relationship with a Movie)
+* */
 @Entity(name = "MEDIA_INFO_ENTITY")
 public class CommonMediaInfo implements Cloneable{
     public CommonMediaInfo() {

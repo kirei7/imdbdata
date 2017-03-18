@@ -8,9 +8,14 @@ import org.springframework.batch.core.JobParameter;
 import java.io.IOException;
 import java.util.Map;
 
+/*
+* Response obtained in String, so there's a need to convert
+* that json string to a map
+* */
 public class DataMapper {
     private static final Logger LOGGER = LoggerFactory.getLogger(DataMapper.class);
 
+    //convert string to map
     public static <T> T mapFromJson(String source, Class<T> resultType) {
         T result = null;
         try {
@@ -22,6 +27,7 @@ public class DataMapper {
     }
 
     //adds additional data to 'data' map
+    //additional data - full plot, tomatoes ratings
     public static void mapAdditionalData(
             Map<String, String> data,
             Map<String, String> additionalData
@@ -34,6 +40,8 @@ public class DataMapper {
         data.putAll(additionalData);
     }
 
+    //build a string which contains GET params
+    //(inventing bicycle)
     public static String makeUrl(Map<String, JobParameter> parameters) {
         StringBuilder sb = new StringBuilder();
 

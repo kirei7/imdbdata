@@ -1,15 +1,16 @@
 package com.vlad.imdbdata.basis.batch;
 
-import org.springframework.stereotype.Component;
 
 /*
-* This class is used to pass some values through the batch steps etc
+* This class is used to pass some values between batch steps, services etc
+* Well, guess it smells but I couldn't find any other solution how to pass
+* values between so different levels of a system
 * */
 public class ValueContainer {
     private Long totalSeasons;
     //last added media
     private String mediaTitle;
-    //lst added media type
+    //last added media type
     private String mediaType;
 
 

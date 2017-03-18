@@ -6,6 +6,11 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/*
+* Seems like manual stopping of the application may cause some errors
+* related to partial saving of data in DB by Batch
+* So here is controller which allows to stop an app
+* */
 @RestController
 @RequestMapping("/system")
 public class SystemController {

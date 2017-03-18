@@ -11,6 +11,9 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.Map;
 
+/*
+* This DataMapper converts Maps to entities
+* */
 public class DataMapper {
     private static final Logger LOGGER
             = LoggerFactory.getLogger("Processor DataMapper");

@@ -24,8 +24,8 @@ public class EpisodeReader implements ItemReader<Map<String, String>> {
     private DataFetcher dataFetcher;
     private String apiUrl;
     private ValueContainer container;
-    private List<Map<String, String>> dataList;
-    private int index = 0;
+    private List<Map<String, String>> dataList; //each element of list contains info about 1 episode
+    private int index = 0;  //index of the next item to be read from dataList
 
     public EpisodeReader(DataFetcher dataFetcher, String apiUrl, ValueContainer container) {
         this.dataFetcher = dataFetcher;
@@ -42,14 +42,16 @@ public class EpisodeReader implements ItemReader<Map<String, String>> {
                 .getJobParameters()
                 .getParameters();
         String url = apiUrl + DataMapper.makeUrl(parameters);
-        for (int i = 1; i <= totalSeasons; i++) {
+        /*this is much like CommonInfoReader, except that here information obtained
+        * multiple times*/
+        for (int i = 1; i <= totalSeasons; i++) {   //cycle by each season
             LOGGER.info("Getting season: " + i);
             String seasonParam = "&season=" + i;
             Map<String, String> seasonInfo = dataFetcher.fetchData(url + seasonParam);
             Object seriesArray =  seasonInfo.get("Episodes");
             List list = (List) seriesArray;
             int totalEpisodes = list.size();
-            for (int j = 1; j <= totalEpisodes; j++) {
+            for (int j = 1; j <= totalEpisodes; j++) {  //cycle by each episode
                 LOGGER.debug("Getting episode: " + j);
                 Map<String, String> episode = dataFetcher.fetchData(
                         url + seasonParam + "&episode=" + j

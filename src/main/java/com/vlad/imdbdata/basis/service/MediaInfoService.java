@@ -61,10 +61,8 @@ public class MediaInfoService {
         return result;
     }
 
-    public long itemsCount() {
-        return repository.count();
-    }
-
+    //convert String values of params to JobParameters,
+    //which can be consumed by JobLauncher
     Map<String, JobParameter> makeParameters(String title, Integer year, MediaType type) {
         Map<String, JobParameter> map = new HashMap<String, JobParameter>() {
             {

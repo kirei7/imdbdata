@@ -1,6 +1,5 @@
 package com.vlad.imdbdata.basis.batch.reader.util;
 
-import com.vlad.imdbdata.basis.batch.reader.CommonMediaInfoReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -8,6 +7,9 @@ import org.springframework.web.client.RestTemplate;
 import java.util.HashMap;
 import java.util.Map;
 
+/*
+* Class for downloading information via network
+* */
 @Component
 public class DataFetcher {
 
