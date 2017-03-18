@@ -19,9 +19,6 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by vlad on 09.03.17.
- */
 @Service
 public class MediaInfoService {
 
